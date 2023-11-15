@@ -14,7 +14,7 @@ public class Dockable : Pickable
     [SerializeField] private OnDockEvent _onDock = new OnDockEvent();
     public OnDockEvent OnDock { get => _onDock; }
 
-    protected void Start()
+    protected override void Start()
     {
         base.Start();
 
@@ -22,7 +22,6 @@ public class Dockable : Pickable
 
         OnDock.AddListener((Docker docker) =>
         {
-            //GetComponent<Rigidbody>().isKinematic = true;
             transform.SetParent(docker.transform);
             transform.DOMove(docker.transform.position, 1f).SetEase(Ease.InFlash);
             transform.DORotate(_correctRotation, 1f).SetEase(Ease.InElastic);

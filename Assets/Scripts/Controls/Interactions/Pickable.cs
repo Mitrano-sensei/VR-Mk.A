@@ -10,24 +10,23 @@ public class Pickable : MonoBehaviour
     [SerializeField] private OnPickEvent _onPick = new OnPickEvent();
     [SerializeField] private OnUnPickEvent _onUnPick = new OnUnPickEvent();
 
+    private Transform _originParent;
+
     public OnPickEvent OnPick { get => _onPick; }
     public OnUnPickEvent OnUnPick { get => _onUnPick; }
+    public Transform OriginParent { get => _originParent; }
 
-    protected void Start()
+    protected virtual void Start()
     {
-        Debug.Log("test " + gameObject.name);
-
+        _originParent = transform.parent;
         Rigidbody rb = gameObject.GetComponent<Rigidbody>();
-        if (!rb) Debug.Log(":(((((");
 
         OnPick.AddListener(() =>
         {
-            Debug.Log("1");
             rb.isKinematic = true;
         });
 
         OnUnPick.AddListener(() => {
-            Debug.Log("2 " + (rb.isKinematic? "oui" : "non"));
             rb.isKinematic = false;
         });
     }

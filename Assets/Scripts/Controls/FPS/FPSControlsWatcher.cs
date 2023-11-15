@@ -71,18 +71,11 @@ public class FPSControlsWatcher : AbstractControlWatcher
             mover.Kill();
             mover = null;
 
-            if (releasedEvent.GetDocker() == null)
-            {
-                var releasedObject = releasedEvent.ReleasedObject;
-                var rb = releasedObject.GetComponent<Rigidbody>();
-                releasedObject.transform.SetParent(_cockpitEnvironment.transform);
-                //rb.isKinematic = false;
-                return;
-            }
+            if (releasedEvent.GetDocker() != null) return;     // Here we let base OnDock event handle the docking.
 
-            // Here we know we are releasing on a docker.
-
-            
+            var releasedObject = releasedEvent.ReleasedObject;
+            var rb = releasedObject.GetComponent<Rigidbody>();
+            releasedObject.transform.SetParent(releasedObject.OriginParent ?  releasedObject.OriginParent : _cockpitEnvironment.transform);
         });
     }
 
@@ -164,7 +157,6 @@ public class FPSControlsWatcher : AbstractControlWatcher
         grabbedObject.layer = oldLayer;
         
         return b;
-
     }
 
     internal IEnumerator MoveUntilDie(Transform myTransform, GameObject target, Sequence tweener)
