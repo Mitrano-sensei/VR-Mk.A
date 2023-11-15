@@ -61,14 +61,14 @@ public class FPSControlsWatcher : AbstractControlWatcher
         {
             pickable.transform.SetParent(Camera.main.transform);
             mover = DOTween.Sequence();
-            mover = mover.Append(pickable.transform.DOLocalMove(Vector3.forward, .5f).SetEase(Ease.Flash));
+            mover = mover.Append(pickable.transform.DOLocalMove(Vector3.forward, .5f).SetEase(Ease.InOutQuad));
             MoveUntilDie(pickable.transform, Camera.main.gameObject, mover);
             //pickable.GetComponent<Rigidbody>().isKinematic = true;
         });
 
         OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
         {
-            mover.Kill();
+            mover?.Kill();
             mover = null;
 
             if (releasedEvent.GetDocker() != null) return;     // Here we let base OnDock event handle the docking.
