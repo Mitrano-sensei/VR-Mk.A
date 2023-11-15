@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,10 +13,10 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
 {
     private Pickable grabbedObject = null;
 
-    private OnInteractEvent _onInteractEvent = new OnInteractEvent();
-    private OnTeleportEvent _onTeleportEvent = new OnTeleportEvent();
-    private OnGrabEvent _onGrabEvent = new OnGrabEvent();
-    private OnReleaseEvent _onReleaseEvent = new OnReleaseEvent();
+    [SerializeField] private OnInteractEvent _onInteractEvent = new OnInteractEvent();
+    [SerializeField] private OnTeleportEvent _onTeleportEvent = new OnTeleportEvent();
+    [SerializeField] private OnGrabEvent _onGrabEvent = new OnGrabEvent();
+    [SerializeField] private OnReleaseEvent _onReleaseEvent = new OnReleaseEvent();
 
     public OnInteractEvent OnInteractEvent { get => _onInteractEvent; }
     public OnTeleportEvent OnTeleportEvent { get => _onTeleportEvent; }
@@ -34,16 +35,18 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
             pickable.OnPick.Invoke();
         });
 
-        OnReleaseEvent.AddListener((Docker docker) =>
+        OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
         {
             GrabbedObject.OnUnPick.Invoke();
-            GrabbedObject = null;
 
             var dockable = GrabbedObject.GetComponent<Dockable>();
-            if (dockable != null)
+            var docker = releasedEvent.GetDocker();
+            if (dockable != null && docker != null)
             {
                 dockable.OnDock.Invoke(docker);
             }
+
+            GrabbedObject = null;
         });
 
         OnInteractEvent.AddListener((Interactable target) =>
@@ -58,21 +61,52 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
  * Event invoked when the player interacts with an interactable object.
  * Interactable object is passed as a parameter.
  */
-public class OnInteractEvent : UnityEvent<Interactable> {}
+[Serializable] public class OnInteractEvent : UnityEvent<Interactable> {}
+
 /**
  * Event invoked when the player teleports to a location.
  * Location is passed as a parameter as a Vector3.
  */
-public class OnTeleportEvent : UnityEvent<Vector3> {}
+[Serializable] public class OnTeleportEvent : UnityEvent<Vector3> {}
+
 /**
  * Event invoked when the player grabs a pickable object.
  * Pickable object is passed as a parameter.
  */
-public class OnGrabEvent : UnityEvent<Pickable> {}
+
+[Serializable] public class OnGrabEvent : UnityEvent<Pickable> {}
 /**
  * Event invoked when the player releases a pickable object.
- * Docker is where the object is released is passed as a parameter, null if it is not a docker.
+ * Docker object can be passed as a parameter of ReleasedEvent.
  */
-public class OnReleaseEvent : UnityEvent<Docker> {}
+[Serializable] public class OnReleaseEvent : UnityEvent<ReleasedEvent> {}
 
+/**
+ * Event describing a release.
+ */
+public class ReleasedEvent
+{
+    private Docker _releasedOn = null;
+    private Pickable _releasedObject = null;
+
+    public Docker ReleasedOn { get => _releasedOn; set => _releasedOn = value; }
+    public Pickable ReleasedObject { get => _releasedObject; set => _releasedObject = value; }
+
+    public ReleasedEvent(Pickable releasedObject, Docker releasedOn)
+    {
+        _releasedOn = releasedOn;
+        ReleasedObject = releasedObject;
+    }
+
+    public ReleasedEvent(Pickable releasedObject) {
+        _releasedObject = releasedObject;
+    }
+
+    public Docker GetDocker()
+    {
+        if (_releasedOn == null) return null;
+
+        return _releasedOn.GetComponent<Docker>() ? _releasedOn.GetComponent<Docker>() : null;
+    }
+}
 #endregion

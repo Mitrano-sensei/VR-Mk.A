@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.Events;
  * */
 public class Interactable : MonoBehaviour
 {
-    private OnInteractionEvent _onInteraction = new OnInteractionEvent();
+    [SerializeField] private OnInteractionEvent _onInteraction = new OnInteractionEvent();
     public OnInteractionEvent OnInteraction { get => _onInteraction; }
 }
 
@@ -17,5 +18,5 @@ public class Interactable : MonoBehaviour
  * Event invoked when the player interacts with an interactable object. 
  * The player can hold a pickable item while doing it, if so it is passed as a parameter, else it is null.
  */
-public class OnInteractionEvent : UnityEvent<Pickable> { }
+[Serializable] public class OnInteractionEvent : UnityEvent<Pickable> { }
 #endregion
