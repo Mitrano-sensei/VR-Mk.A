@@ -1,3 +1,6 @@
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +8,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
+using static UnityEngine.GraphicsBuffer;
 
 /**
  * Controls watcher for the FPS controls.
@@ -18,12 +22,12 @@ public class FPSControlsWatcher : AbstractControlWatcher
     {
         OnTeleportEvent.AddListener((Vector3 position) =>
         {
-            Debug.Log("Teleportation to " + position);
+            // Debug.Log("Teleportation to " + position);
         });
 
         OnGrabEvent.AddListener((Pickable pickable) =>
         {
-            Debug.Log("Grabbing " + pickable.name);
+            // Debug.Log("Grabbing " + pickable.name);
             this.GrabbedObject = pickable;
         });
 
@@ -33,17 +37,17 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             if (docker != null)
             {
-                Debug.Log("Releasing on " + docker.name);
+                // Debug.Log("Releasing on " + docker.name);
             }
             else
             {
-                Debug.Log("Releasing");
+                // Debug.Log("Releasing");
             }
         });
 
         OnInteractEvent.AddListener((Interactable interactable) =>
         {
-            Debug.Log("Interacting with " + interactable.name);
+            // Debug.Log("Interacting with " + interactable.name);
         });
 
         OnTeleportEvent.AddListener((Vector3 newPos) =>
@@ -51,27 +55,27 @@ public class FPSControlsWatcher : AbstractControlWatcher
             _player.transform.position = newPos;
         });
 
+        Sequence mover = null;
+
         OnGrabEvent.AddListener((Pickable pickable) =>
         {
             pickable.transform.SetParent(Camera.main.transform);
-            pickable.transform.position = Camera.main.transform.position + Camera.main.transform.forward;
-            pickable.GetComponent<Rigidbody>().isKinematic = true;
+            mover = DOTween.Sequence();
+            mover = mover.Append(pickable.transform.DOLocalMove(Vector3.forward, .5f).SetEase(Ease.InOutQuad));
+            MoveUntilDie(pickable.transform, Camera.main.gameObject, mover);
+            //pickable.GetComponent<Rigidbody>().isKinematic = true;
         });
 
         OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
         {
-            if (releasedEvent.GetDocker() == null)
-            {
-                var releasedObject = releasedEvent.ReleasedObject;
-                var rb = releasedObject.GetComponent<Rigidbody>();
-                releasedObject.transform.SetParent(_cockpitEnvironment.transform);
-                rb.isKinematic = false;
-                return;
-            }
+            mover?.Kill();
+            mover = null;
 
-            // Here we know we are releasing on a docker.
+            if (releasedEvent.GetDocker() != null) return;     // Here we let base OnDock event handle the docking.
 
-            
+            var releasedObject = releasedEvent.ReleasedObject;
+            var rb = releasedObject.GetComponent<Rigidbody>();
+            releasedObject.transform.SetParent(releasedObject.OriginParent ?  releasedObject.OriginParent : _cockpitEnvironment.transform);
         });
     }
 
@@ -80,11 +84,11 @@ public class FPSControlsWatcher : AbstractControlWatcher
         // Calls Teleport event if the player presses the right mouse button.
         if (Input.GetMouseButtonDown(1))
         {
-            Debug.Log("Right button");
+            // Debug.Log("Right button");
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
+            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 // If the object is a teleporter, invoke the event.
                 if (hit.collider.gameObject.GetComponent<TeleportationArea>())
@@ -97,11 +101,11 @@ public class FPSControlsWatcher : AbstractControlWatcher
         // Calls Grab Event when the player presses E and is looking at a pickable object.
         if (Input.GetKeyDown(KeyCode.E) && this.GrabbedObject == null)
         {
-            Debug.Log("E Button");
+            // Debug.Log("E Button");
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
+            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 // If the object is a pickable, invoke the event.
                 if (hit.collider.gameObject.GetComponent<Pickable>())
@@ -112,11 +116,11 @@ public class FPSControlsWatcher : AbstractControlWatcher
         }
         else if (this.GrabbedObject != null && !Input.GetKey(KeyCode.E))
         {
-            Debug.Log("Releasing Button");
+            // Debug.Log("Releasing Button");
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit);
+            HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit);
             var docker = hit.collider?.gameObject?.GetComponent<Docker>(); 
             OnReleaseEvent.Invoke(docker == null ? new ReleasedEvent(GrabbedObject) : new ReleasedEvent(GrabbedObject, docker));
         }
@@ -124,11 +128,11 @@ public class FPSControlsWatcher : AbstractControlWatcher
         // Calls Interact Event when the player presses left click and is looking at an interactable object.
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Left Mouse Button");
+            // Debug.Log("Left Mouse Button");
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
+            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 // If the object is an interactable, invoke the event.
                 if (hit.collider.gameObject.GetComponent<Interactable>())
@@ -138,4 +142,33 @@ public class FPSControlsWatcher : AbstractControlWatcher
             }
         }
     }
+
+    /**
+     * Cast a ray from the camera to the back of the grabbed object.
+     */
+    private bool HitBehindGrabbedObject(GameObject grabbedObject, out RaycastHit hit)
+    {
+
+        if (!grabbedObject) return Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit); ;
+
+        int oldLayer = grabbedObject.layer;
+        grabbedObject.layer = 2;
+        bool b = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, Mathf.Infinity, ~(1 << 2));
+        grabbedObject.layer = oldLayer;
+        
+        return b;
+    }
+
+    internal IEnumerator MoveUntilDie(Transform myTransform, GameObject target, Sequence tweener)
+    {
+        while (tweener != null)
+        {
+            tweener.Restart();
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return null;
+    }
+
+    
 }
