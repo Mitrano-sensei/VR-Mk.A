@@ -84,7 +84,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
+            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 // If the object is a teleporter, invoke the event.
                 if (hit.collider.gameObject.GetComponent<TeleportationArea>())
@@ -101,7 +101,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
+            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 // If the object is a pickable, invoke the event.
                 if (hit.collider.gameObject.GetComponent<Pickable>())
@@ -116,7 +116,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit);
+            HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit);
             var docker = hit.collider?.gameObject?.GetComponent<Docker>(); 
             OnReleaseEvent.Invoke(docker == null ? new ReleasedEvent(GrabbedObject) : new ReleasedEvent(GrabbedObject, docker));
         }
@@ -128,7 +128,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
+            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 // If the object is an interactable, invoke the event.
                 if (hit.collider.gameObject.GetComponent<Interactable>())
@@ -137,5 +137,22 @@ public class FPSControlsWatcher : AbstractControlWatcher
                 }
             }
         }
+    }
+
+    /**
+     * Cast a ray from the camera to the back of the grabbed object.
+     */
+    private bool HitBehindGrabbedObject(GameObject grabbedObject, out RaycastHit hit)
+    {
+
+        if (!grabbedObject) return Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit); ;
+
+        int oldLayer = grabbedObject.layer;
+        grabbedObject.layer = 2;
+        bool b = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, Mathf.Infinity, ~(1 << 2));
+        grabbedObject.layer = oldLayer;
+        
+        return b;
+
     }
 }
