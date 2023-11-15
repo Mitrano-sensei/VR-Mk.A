@@ -18,16 +18,24 @@ public class FPSControlsWatcher : AbstractControlWatcher
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _cockpitEnvironment;
 
+    private LogManager _logger;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _logger = LogManager.Instance;
+    }
+
     public void Start()
     {
         OnTeleportEvent.AddListener((Vector3 position) =>
         {
-            // Debug.Log("Teleportation to " + position);
+            _logger.Trace("Teleportation to " + position);
         });
 
         OnGrabEvent.AddListener((Pickable pickable) =>
         {
-            // Debug.Log("Grabbing " + pickable.name);
+            _logger.Trace("Grabbing " + pickable.name);
             this.GrabbedObject = pickable;
         });
 
@@ -37,17 +45,17 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             if (docker != null)
             {
-                // Debug.Log("Releasing on " + docker.name);
+                _logger.Trace("Releasing on " + docker.name);
             }
             else
             {
-                // Debug.Log("Releasing");
+                _logger.Trace("Releasing");
             }
         });
 
         OnInteractEvent.AddListener((Interactable interactable) =>
         {
-            // Debug.Log("Interacting with " + interactable.name);
+            _logger.Trace("Interacting with " + interactable.name);
         });
 
         OnTeleportEvent.AddListener((Vector3 newPos) =>
@@ -84,7 +92,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
         // Calls Teleport event if the player presses the right mouse button.
         if (Input.GetMouseButtonDown(1))
         {
-            // Debug.Log("Right button");
+            _logger.Trace("Right button");
 
             // Raycast from main camera to next object.
             RaycastHit hit;
@@ -101,7 +109,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
         // Calls Grab Event when the player presses E and is looking at a pickable object.
         if (Input.GetKeyDown(KeyCode.E) && this.GrabbedObject == null)
         {
-            // Debug.Log("E Button");
+            _logger.Trace("E Button");
 
             // Raycast from main camera to next object.
             RaycastHit hit;
@@ -116,7 +124,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
         }
         else if (this.GrabbedObject != null && !Input.GetKey(KeyCode.E))
         {
-            // Debug.Log("Releasing Button");
+            _logger.Trace("Releasing Button");
 
             // Raycast from main camera to next object.
             RaycastHit hit;
@@ -128,7 +136,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
         // Calls Interact Event when the player presses left click and is looking at an interactable object.
         if (Input.GetMouseButtonDown(0))
         {
-            // Debug.Log("Left Mouse Button");
+            _logger.Trace("Left Mouse Button");
 
             // Raycast from main camera to next object.
             RaycastHit hit;
