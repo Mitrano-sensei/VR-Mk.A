@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Numerics;
 using UnityEngine.Events;
 
 /**
@@ -17,6 +15,9 @@ public class Dockable : Pickable
         OnDock.AddListener((Docker docker) =>
         {
             // TODO : DOTWeen
+            transform.SetParent(docker.transform);
+            transform.position = new UnityEngine.Vector3(0, 0, 0);
+            // TODO : Do rotation as it should be
         });
     }
 
