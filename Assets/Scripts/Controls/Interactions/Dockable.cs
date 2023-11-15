@@ -17,14 +17,22 @@ public class Dockable : Pickable
     protected override void Start()
     {
         base.Start();
+        var rb = GetComponent<Rigidbody>();
 
         if (_correctRotation == null) _correctRotation = new UnityEngine.Vector3(0, 0, 0);
 
         OnDock.AddListener((Docker docker) =>
         {
+            rb.isKinematic = true;
             transform.SetParent(docker.transform);
-            transform.DOMove(docker.transform.position, 1f).SetEase(Ease.InFlash);
-            transform.DORotate(_correctRotation, 1f).SetEase(Ease.InElastic);
+            Sequence sequence = DOTween.Sequence()
+                        .Append(transform.DOMove(docker.transform.position, 1f).SetEase(Ease.InQuad))
+                        .Join(transform.DORotate(_correctRotation, 1f).SetEase(Ease.InQuad))
+                        .OnComplete(() =>
+                        {
+                            transform.SetParent(docker.transform); // To be sure
+                            transform.localPosition = new();
+                        });
         });
     }
 
