@@ -14,26 +14,31 @@ public class Dockable : Pickable
     [SerializeField] private OnDockEvent _onDock = new OnDockEvent();
     public OnDockEvent OnDock { get => _onDock; }
 
+    private Rigidbody _rb;
+
     protected override void Start()
     {
         base.Start();
-        var rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
+        if (_rb == null) Debug.LogError("Rigidbody missing on " + gameObject.name);
 
         if (_correctRotation == null) _correctRotation = new UnityEngine.Vector3(0, 0, 0);
 
-        OnDock.AddListener((Docker docker) =>
-        {
-            rb.isKinematic = true;
-            transform.SetParent(docker.transform);
-            Sequence sequence = DOTween.Sequence()
-                        .Append(transform.DOMove(docker.transform.position, 1f).SetEase(Ease.InQuad))
-                        .Join(transform.DORotate(_correctRotation, 1f).SetEase(Ease.InQuad))
-                        .OnComplete(() =>
-                        {
-                            transform.SetParent(docker.transform); // To be sure
-                            transform.localPosition = new();
-                        });
-        });
+        OnDock.AddListener(DockToObject);
+    }
+
+    private void DockToObject(Docker docker) {
+        _rb.isKinematic = true;
+        transform.SetParent(docker.transform);
+        Sequence sequence = DOTween.Sequence()
+                    .Append(transform.DOMove(docker.transform.position, 1f).SetEase(Ease.InQuad))
+                    .Join(transform.DORotate(_correctRotation, 1f).SetEase(Ease.InQuad))
+                    .OnComplete(() =>
+                    {
+                        transform.SetParent(docker.transform); // To be sure
+                        transform.localPosition = new();
+                    });
+
     }
 
 }

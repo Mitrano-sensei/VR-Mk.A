@@ -29,31 +29,45 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
         base.Awake();
         GrabbedObject = null;
 
-        OnGrabEvent.AddListener((Pickable pickable) =>
+        OnGrabEvent.AddListener(HandleBaseGrab);
+
+        OnReleaseEvent.AddListener(HandleBaseRelease);
+
+        OnInteractEvent.AddListener(HandleBaseInteract);
+    }
+
+    /**
+     * Handle base grab
+     */
+    private void HandleBaseGrab(Pickable pickable)
+    {
+        GrabbedObject = pickable;
+        pickable.OnPick.Invoke();
+    }
+
+    /**
+     * Handle base release
+     */
+    private void HandleBaseRelease(ReleasedEvent releasedEvent) {
+        GrabbedObject.OnUnPick.Invoke();
+
+        var dockable = GrabbedObject.GetComponent<Dockable>();
+        var docker = releasedEvent.GetDocker();
+        if (dockable != null && docker != null)
         {
-            GrabbedObject = pickable;
-            Debug.Log(pickable.name);
-            pickable.OnPick.Invoke();
-        });
+            dockable.OnDock.Invoke(docker);
+        }
 
-        OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
-        {
-            GrabbedObject.OnUnPick.Invoke();
+        GrabbedObject = null;
+    }
 
-            var dockable = GrabbedObject.GetComponent<Dockable>();
-            var docker = releasedEvent.GetDocker();
-            if (dockable != null && docker != null)
-            {
-                dockable.OnDock.Invoke(docker);
-            }
+    /**
+     * Handle base interact
+     */
+    private void HandleBaseInteract(Interactable target)
+    {
+        target.OnInteraction.Invoke(GrabbedObject);
 
-            GrabbedObject = null;
-        });
-
-        OnInteractEvent.AddListener((Interactable target) =>
-        {
-            target.OnInteraction.Invoke(GrabbedObject);
-        });
     }
 }
 
