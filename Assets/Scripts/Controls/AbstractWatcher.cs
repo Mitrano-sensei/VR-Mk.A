@@ -32,6 +32,7 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
         OnGrabEvent.AddListener((Pickable pickable) =>
         {
             GrabbedObject = pickable;
+            Debug.Log(pickable.name);
             pickable.OnPick.Invoke();
         });
 

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Numerics;
 using UnityEngine;
@@ -8,19 +9,23 @@ using UnityEngine.Events;
  */
 public class Dockable : Pickable
 {
-    private OnDockEvent _onDock = new OnDockEvent();
+    [SerializeField] private UnityEngine.Vector3 _correctRotation;
+
+    [SerializeField] private OnDockEvent _onDock = new OnDockEvent();
     public OnDockEvent OnDock { get => _onDock; }
 
-    private void Awake()
+    protected void Start()
     {
+        base.Start();
+
+        if (_correctRotation == null) _correctRotation = new UnityEngine.Vector3(0, 0, 0);
+
         OnDock.AddListener((Docker docker) =>
         {
-            // TODO : DOTWeen
-            GetComponent<Rigidbody>().isKinematic = true;
+            //GetComponent<Rigidbody>().isKinematic = true;
             transform.SetParent(docker.transform);
-            transform.localPosition = new UnityEngine.Vector3(0, 0, 0);
-            transform.rotation = UnityEngine.Quaternion.identity;
-            // TODO : Do rotation as it should be
+            transform.DOMove(docker.transform.position, 1f).SetEase(Ease.InFlash);
+            transform.DORotate(_correctRotation, 1f).SetEase(Ease.InElastic);
         });
     }
 
