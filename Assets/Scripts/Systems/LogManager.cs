@@ -32,7 +32,9 @@ public class LogManager : Singleton<LogManager>
      */
     public void LogInGame(string message)
     {
-        _inGameConsole.text = message + '\n' + _inGameConsole.text;
+        string date = System.DateTime.Now.ToString("HH:mm:ss");
+
+        _inGameConsole.text = date + " " + message + '\n' + _inGameConsole.text;
     }
 
     /**
