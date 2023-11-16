@@ -66,8 +66,9 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
      */
     private void HandleBaseInteract(Interactable target)
     {
-        target.OnInteraction.Invoke(GrabbedObject);
+        if (GetComponent<Dockable>() != null && GetComponent<Dockable>().DockedOn == null) return; // TODO : On Fail Interaction Event ? 
 
+        target.OnInteraction.Invoke(GrabbedObject);
     }
 }
 

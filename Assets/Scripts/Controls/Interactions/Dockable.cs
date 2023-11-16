@@ -1,6 +1,6 @@
 using DG.Tweening;
 using System;
-using System.Numerics;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,25 +9,49 @@ using UnityEngine.Events;
  */
 public class Dockable : Pickable
 {
+    [Header("Position")]
     [SerializeField] private UnityEngine.Vector3 _correctRotation;
-
+    
+    [Header("Events")]
     [SerializeField] private OnDocking _onDock = new OnDocking();
-    public OnDocking OnDock { get => _onDock; }
+
+    [Header("Constraints")]
+    [SerializeField] private List<UnityEngine.Vector2> _constraints = new();
 
     private Rigidbody _rb;
+    private Docker _dockedOn;
+    private LogManager _logger;
+
+    public OnDocking OnDock { get => _onDock; }
+    public Docker DockedOn { get => _dockedOn; set => _dockedOn = value; }
 
     protected override void Start()
     {
         base.Start();
+        _logger = LogManager.Instance;
         _rb = GetComponent<Rigidbody>();
         if (_rb == null) Debug.LogError("Rigidbody missing on " + gameObject.name);
 
         if (_correctRotation == null) _correctRotation = new UnityEngine.Vector3(0, 0, 0);
 
-        OnDock.AddListener(DockToObject);
+        if (_constraints.Count == 0)
+        {
+            OnDock.AddListener(SimpleDockToObject);
+            OnPick.AddListener(SimpleUndockObject);
+        }
     }
 
-    private void DockToObject(Docker docker) {
+    /**
+     * Dock a simple object to a docker.
+     * A simple object is an object that has no constraints.
+     */
+    private void SimpleDockToObject(Docker docker) {
+        if (!docker.IsAvailable || !docker.IsActive)
+            return;
+
+        _logger.Trace("Docking " + gameObject.name + " to " + docker.name);
+
+        DockedOn = docker;
         _rb.isKinematic = true;
         transform.SetParent(docker.transform);
         Sequence sequence = DOTween.Sequence()
@@ -43,17 +67,25 @@ public class Dockable : Pickable
         onDockEvent.Type = OnDockEvent.DockType.DOCK;
         onDockEvent.Dockable = this;
 
-        // TODO : Manage Undocking
-
         docker.OnDock.Invoke(onDockEvent);
     }
 
-    private void UndockObject(Docker docker)
+    /**
+     * UnDock a simple object from a docker.
+     * A simple object is an object that has no constraints.
+     */
+    private void SimpleUndockObject()
     {
+        if (DockedOn == null) return;
+
+        _logger.Trace("Undocking " + gameObject.name + " from " + DockedOn.name);
+
         var onUndockEvent = new OnDockEvent();
         onUndockEvent.Type = OnDockEvent.DockType.UNDOCK;
         onUndockEvent.Dockable = this;
-        docker.OnDock.Invoke(onUndockEvent);
+        DockedOn.OnDock.Invoke(onUndockEvent);
+
+        DockedOn = null;
     }
 
 }

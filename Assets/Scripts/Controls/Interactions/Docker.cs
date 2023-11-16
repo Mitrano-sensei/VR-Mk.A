@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,11 +11,44 @@ public class Docker : MonoBehaviour
     private int _x;
     private int _y;
     private bool _isActive = true;
+    private bool _isAvailable = true;
 
     public bool IsActive { get => _isActive; set => _isActive = value; }
+    public bool IsAvailable { get => _isAvailable; set => _isAvailable = value; }
     public int X { get => _x; set => _x = value; }
     public int Y { get => _y; set => _y = value; }
     public OnDock OnDock { get => _onDock; set => _onDock = value; }
+
+    private void Start()
+    {
+        OnDock.AddListener(OnDockHandler);
+        OnDock.AddListener(OnUndockHandler);
+    }
+
+    private void Update()
+    {
+        // Change color to green if dock is available
+        if (IsAvailable)
+            GetComponent<Renderer>().material.color = Color.green;
+        else
+            GetComponent<Renderer>().material.color = Color.red;
+    }
+
+    private void OnDockHandler(OnDockEvent onDockEvent)
+    {
+        if (onDockEvent.Type == OnDockEvent.DockType.UNDOCK)
+            return;
+        
+        IsAvailable = false;
+    }
+
+    private void OnUndockHandler(OnDockEvent onDockEvent)
+    {
+        if (onDockEvent.Type == OnDockEvent.DockType.DOCK)
+            return;
+        
+        IsAvailable = true;
+    }
 }
 
 #region Events

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -53,7 +52,7 @@ public class DockManager : Singleton<DockManager>
         }
     }
 
-    public bool IsDockable(Vector2 position)
+    private bool IsDockable(Vector2 position)
     {
         if (position.x < 0 || position.x >= _nbDockX) return false;
         if (position.y < 0 || position.y >= _nbDockY) return false;
@@ -95,11 +94,20 @@ public class DockManager : Singleton<DockManager>
         return !dock.IsActive && GetNeighbours(dock).ToList().FindAll(d => d.IsActive).Count > 0;
     }
 
-    private List<Docker> GetBuyableDocks()
+    public List<Docker> GetBuyableDocks()
     {
         return _docks.SelectMany(i => i).ToList().FindAll(dock => IsBuyable(dock));
     }
 
+    public List<Docker> GetActiveDocks(Boolean active = true)
+    {
+        return _docks.SelectMany(i => i).ToList().FindAll(d => d.IsActive == active);
+    }
+
+    public List<Docker> GetAvailableActiveDocks()
+    {
+        return GetActiveDocks().FindAll(dock => dock.IsAvailable);
+    }
     
 
 }
