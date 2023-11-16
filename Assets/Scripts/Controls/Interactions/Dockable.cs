@@ -43,7 +43,17 @@ public class Dockable : Pickable
         onDockEvent.Type = OnDockEvent.DockType.DOCK;
         onDockEvent.Dockable = this;
 
+        // TODO : Manage Undocking
+
         docker.OnDock.Invoke(onDockEvent);
+    }
+
+    private void UndockObject(Docker docker)
+    {
+        var onUndockEvent = new OnDockEvent();
+        onUndockEvent.Type = OnDockEvent.DockType.UNDOCK;
+        onUndockEvent.Dockable = this;
+        docker.OnDock.Invoke(onUndockEvent);
     }
 
 }
