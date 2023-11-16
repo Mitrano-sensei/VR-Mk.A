@@ -142,10 +142,11 @@ public class FPSControlsWatcher : AbstractControlWatcher
             RaycastHit hit;
             if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
+                Interactable interactable = hit.collider.gameObject.GetComponent<Interactable>();
                 // If the object is an interactable, invoke the event.
-                if (hit.collider.gameObject.GetComponent<Interactable>())
+                if (interactable != null)
                 {
-                    OnInteractEvent.Invoke(hit.collider.gameObject.GetComponent<Interactable>());
+                    OnInteractEvent.Invoke(interactable);
                 }
             }
         }
