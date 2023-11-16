@@ -11,8 +11,8 @@ public class Dockable : Pickable
 {
     [SerializeField] private UnityEngine.Vector3 _correctRotation;
 
-    [SerializeField] private OnDockEvent _onDock = new OnDockEvent();
-    public OnDockEvent OnDock { get => _onDock; }
+    [SerializeField] private OnDocking _onDock = new OnDocking();
+    public OnDocking OnDock { get => _onDock; }
 
     private Rigidbody _rb;
 
@@ -39,6 +39,11 @@ public class Dockable : Pickable
                         transform.localPosition = new();
                     });
 
+        var onDockEvent = new OnDockEvent();
+        onDockEvent.Type = OnDockEvent.DockType.DOCK;
+        onDockEvent.Dockable = this;
+
+        docker.OnDock.Invoke(onDockEvent);
     }
 
 }
@@ -48,5 +53,5 @@ public class Dockable : Pickable
  * Event invoked when a dockable object is docked to a docker.
  * The docker is passed as a parameter.
  */
-[Serializable] public class OnDockEvent : UnityEvent<Docker> { }
+[Serializable] public class OnDocking : UnityEvent<Docker> { }
 #endregion
