@@ -7,6 +7,7 @@ public class FloatMovement : MonoBehaviour
 {
     [SerializeField] float _magnitude = .1f;
     [SerializeField] float _duration = 2f;
+    [SerializeField] Vector3 _direction = Vector3.up;
 
     void Start()
     {
@@ -14,8 +15,8 @@ public class FloatMovement : MonoBehaviour
 
         // Start Floating using dotween, looping forever
         DOTween.Sequence()
-            .Append(transform.DOLocalMoveY(initialPosition.y + _magnitude, _duration/2).SetEase(Ease.InOutSine))
-            .Append(transform.DOLocalMoveY(initialPosition.y, _duration/2).SetEase(Ease.InOutSine))
+            .Append(transform.DOLocalMove(initialPosition + _direction * _magnitude, _duration/2).SetEase(Ease.InOutSine))
+            .Append(transform.DOLocalMove(initialPosition, _duration/2).SetEase(Ease.InOutSine))
             .SetLoops(-1);
     }
 

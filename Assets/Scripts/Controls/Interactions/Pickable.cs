@@ -10,7 +10,7 @@ public class Pickable : MonoBehaviour
     [SerializeField] private OnPickEvent _onPick = new OnPickEvent();
     [SerializeField] private OnUnPickEvent _onUnPick = new OnUnPickEvent();
 
-    [SerializeField] private Transform _originParent;
+    private Transform _originParent;
 
     public OnPickEvent OnPick { get => _onPick; }
     public OnUnPickEvent OnUnPick { get => _onUnPick; }

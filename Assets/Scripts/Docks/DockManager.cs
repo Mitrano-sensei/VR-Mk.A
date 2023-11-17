@@ -33,8 +33,6 @@ public class DockManager : Singleton<DockManager>
      */
     private void InitializeMainBoard()
     {
-        var toPlayer = _docksOrigin.forward * (_invertOriginZ? -1 : 1);
-
         _docks = new List<List<Docker>>();
 
         for (int i = 0; i < _nbDockX; i++)
@@ -46,6 +44,8 @@ public class DockManager : Singleton<DockManager>
                 dock.X = i;
                 dock.Y = j;
                 dock.IsActive = firstActiveDocksIndex.Contains(new Vector2(i, j));
+
+
                 _docks[i].Add(dock);
             }
         }

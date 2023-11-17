@@ -128,3 +128,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _magnitude: 0.1
   _duration: 2
+  _direction: {x: 0, y: 0, z: 1}
