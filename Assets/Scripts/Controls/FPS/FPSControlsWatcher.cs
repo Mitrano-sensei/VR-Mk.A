@@ -72,11 +72,11 @@ public class FPSControlsWatcher : AbstractControlWatcher
             mover?.Kill();
             mover = null;
 
-            if (releasedEvent.GetDocker() != null) return;     // Here we let base OnDock event handle the docking.
+            if (releasedEvent.GetDocker() != null && releasedEvent.GetDocker().IsActive && releasedEvent.GetDocker().IsAvailable) return;     // Here we let base OnDock event handle the docking.
 
             var releasedObject = releasedEvent.ReleasedObject;
             var rb = releasedObject.GetComponent<Rigidbody>();
-            releasedObject.transform.SetParent(releasedObject.OriginParent ?  releasedObject.OriginParent : _cockpitEnvironment.transform);
+            releasedObject.transform.SetParent(releasedObject.OriginParent != null ?  releasedObject.OriginParent : _cockpitEnvironment.transform);
         });
     }
 

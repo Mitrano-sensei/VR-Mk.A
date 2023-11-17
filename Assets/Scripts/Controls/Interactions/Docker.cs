@@ -27,11 +27,15 @@ public class Docker : MonoBehaviour
 
     private void Update()
     {
-        // Change color to green if dock is available
-        if (IsAvailable)
-            GetComponent<Renderer>().material.color = Color.green;
+        if (!IsActive)
+            GetComponent<Renderer>().material.color = Color.gray;
         else
-            GetComponent<Renderer>().material.color = Color.red;
+        {
+            if (IsAvailable)
+                GetComponent<Renderer>().material.color = Color.green;
+            else
+                GetComponent<Renderer>().material.color = Color.red;
+        }
     }
 
     private void OnDockHandler(OnDockEvent onDockEvent)
@@ -48,6 +52,8 @@ public class Docker : MonoBehaviour
             return;
         
         IsAvailable = true;
+        var dockable = onDockEvent.Dockable;
+        dockable.transform.SetParent(dockable.OriginParent);
     }
 }
 

@@ -12,10 +12,11 @@ public class DockManager : Singleton<DockManager>
 
     [Description("Position of dock (0,0) in the scene. \nPlease note that X, Y and Z should be respectivly set to right, up and to the player")]
     [SerializeField] private Transform _docksOrigin;
+    [Description("If true, the origin of the docks will be inverted on the Z axis")]
+    [SerializeField] private bool _invertOriginZ = false;
 
     [Header("Docks")]
     [SerializeField] private Docker _dockPrefab;
-    [SerializeField] private Transform _dockParent;
     [SerializeField] private List<Vector2> firstActiveDocksIndex;
 
     private List<List<Docker>> _docks;
@@ -32,9 +33,7 @@ public class DockManager : Singleton<DockManager>
      */
     private void InitializeMainBoard()
     {
-        var left = new Vector3(_docksOrigin.position.x, 0, 0);
-        var up = new Vector3(0, _docksOrigin.position.y, 0);
-        var toPlayer = new Vector3(0, 0, _docksOrigin.position.z);
+        var toPlayer = _docksOrigin.forward * (_invertOriginZ? -1 : 1);
 
         _docks = new List<List<Docker>>();
 
@@ -43,7 +42,7 @@ public class DockManager : Singleton<DockManager>
             _docks.Add(new List<Docker>());
             for (int j = 0; j < _nbDockY; j++)
             {
-                var dock = Instantiate(_dockPrefab, _docksOrigin.position + i * left + j * up, Quaternion.identity, _dockParent != null ? _dockParent : transform);
+                var dock = Instantiate(_dockPrefab, _docksOrigin.position + i * _docksOrigin.right * .15f + j * _docksOrigin.up * .15f, Quaternion.identity, _docksOrigin);
                 dock.X = i;
                 dock.Y = j;
                 dock.IsActive = firstActiveDocksIndex.Contains(new Vector2(i, j));

@@ -59,8 +59,11 @@ public class Dockable : Pickable
                     .Join(transform.DORotate(_correctRotation, 1f).SetEase(Ease.InQuad))
                     .OnComplete(() =>
                     {
-                        transform.SetParent(docker.transform); // To be sure
-                        transform.localPosition = new();
+                        if (!docker.IsAvailable) // To verify if we haven't undocked in the meantime
+                        {
+                            transform.SetParent(docker.transform); // To be sure
+                            transform.localPosition = new();
+                        }
                     });
 
         var onDockEvent = new OnDockEvent();
