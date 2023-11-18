@@ -1,4 +1,6 @@
+using Palmmedia.ReportGenerator.Core.Logging;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,7 +9,14 @@ using UnityEngine.Events;
  */
 public class Docker : MonoBehaviour
 {
+    [Header("Events")]
     [SerializeField] private OnDock _onDock = new OnDock();
+
+    [Header("Materials")]
+    [SerializeField] private Material _highlightBuyMaterial;
+    [SerializeField] private Material _activeMaterial;
+    [SerializeField] private Material _inactiveMaterial;
+
     private int _x;
     private int _y;
     private bool _isActive = true;
@@ -19,23 +28,47 @@ public class Docker : MonoBehaviour
     public int Y { get => _y; set => _y = value; }
     public OnDock OnDock { get => _onDock; set => _onDock = value; }
 
-    private void Start()
+    private LogManager _logger;
+
+    private void Awake()
     {
-        OnDock.AddListener(OnDockHandler);
-        OnDock.AddListener(OnUndockHandler);
     }
 
-    private void Update()
+    private void Start()
     {
-        if (!IsActive)
-            GetComponent<Renderer>().material.color = Color.gray;
-        else
+        _logger = LogManager.Instance;
+
+        if (_activeMaterial == null)
+            _logger.Error("Active material is not set for " + gameObject.name);
+
+        if (_inactiveMaterial == null)
+            _logger.Error("Inactive material is not set for " + gameObject.name);
+
+        SetActiveShader();
+
+        OnDock.AddListener(OnDockHandler);
+        OnDock.AddListener(OnUndockHandler);
+
+        OnDock.AddListener(e => SetActiveShader());
+    }
+
+    private void SetActiveShader()
+    {
+        var renderer = GetComponent<MeshRenderer>();
+        if (!IsAvailable)
         {
-            if (IsAvailable)
-                GetComponent<Renderer>().material.color = Color.green;
-            else
-                GetComponent<Renderer>().material.color = Color.red;
+            // Make the dock invisible 
+            renderer.enabled = false;
+            return;
         }
+        renderer.enabled = true;
+
+        if (IsActive)
+            renderer.material = _activeMaterial;
+        else
+            renderer.material = _inactiveMaterial;
+
+        renderer.material.RandomizeTilingAndSpeed();
     }
 
     private void OnDockHandler(OnDockEvent onDockEvent)

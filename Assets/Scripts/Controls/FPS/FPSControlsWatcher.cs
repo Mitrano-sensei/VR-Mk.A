@@ -11,12 +11,9 @@ public class FPSControlsWatcher : AbstractControlWatcher
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _cockpitEnvironment;
 
-    private LogManager _logger;
-
     protected override void Awake()
     {
         base.Awake();
-        _logger = LogManager.Instance;
     }
 
     public void Start()

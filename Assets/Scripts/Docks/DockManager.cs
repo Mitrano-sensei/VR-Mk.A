@@ -46,7 +46,6 @@ public class DockManager : Singleton<DockManager>
                 dock.Y = j;
                 dock.IsActive = firstActiveDocksIndex.Contains(new Vector2(i, j));
 
-
                 _docks[i].Add(dock);
             }
         }

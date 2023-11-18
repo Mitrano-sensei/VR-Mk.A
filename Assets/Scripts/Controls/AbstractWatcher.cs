@@ -26,7 +26,7 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
     public OnReleaseEvent OnReleaseEvent { get => _onReleaseEvent; }
     protected Pickable GrabbedObject { get => grabbedObject; set => grabbedObject = value; }
 
-    private LogManager _logger;
+    protected LogManager _logger;
 
     protected override void Awake()
     {

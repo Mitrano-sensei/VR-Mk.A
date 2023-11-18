@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -48,4 +49,9 @@ public class LogManager : Singleton<LogManager>
         _inGameConsole.text = string.Empty;
     }
 
+    internal void Error(string message)
+    {
+        Debug.LogError(message);
+        LogInGame(message); // TODO : Make it red ? 
+    }
 }

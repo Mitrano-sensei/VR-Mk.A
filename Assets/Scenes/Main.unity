@@ -327,7 +327,7 @@ MonoBehaviour:
   _nbDockY: 12
   _docksOrigin: {fileID: 695593882}
   _invertOriginZ: 1
-  _dockPrefab: {fileID: 5910768033283173352, guid: abd2edf3255a4c24eab4cfdabb091f0b, type: 3}
+  _dockPrefab: {fileID: 8915568232425242251, guid: b6ca7ea81ea5b664893cf247395c0d9b, type: 3}
   firstActiveDocksIndex:
   - {x: 5, y: 4}
   - {x: 10, y: 2}
@@ -679,7 +679,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1083059074
 GameObject:
@@ -1224,7 +1224,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163341471010937462, guid: 1a32bb5aaf21df040a86121d1db770fb, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1163341471010937462, guid: 1a32bb5aaf21df040a86121d1db770fb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1436,7 +1436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4690143699752417383, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.09539795
+      value: -0.09338379
       objectReference: {fileID: 0}
     - target: {fileID: 6107694177497397987, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_RootOrder
