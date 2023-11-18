@@ -1,6 +1,8 @@
+using DG.Tweening;
 using Palmmedia.ReportGenerator.Core.Logging;
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,7 +15,7 @@ public class Docker : MonoBehaviour
     [SerializeField] private OnDock _onDock = new OnDock();
 
     [Header("Materials")]
-    [SerializeField] private Material _highlightBuyMaterial;
+    [SerializeField] private Material _highlightBuyMaterial = null;
     [SerializeField] private Material _activeMaterial;
     [SerializeField] private Material _inactiveMaterial;
 
