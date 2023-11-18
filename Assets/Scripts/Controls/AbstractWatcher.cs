@@ -1,7 +1,9 @@
+using Palmmedia.ReportGenerator.Core.Logging;
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 /**
  * A watcher that defines a common interface for all control watchers.
@@ -24,9 +26,12 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
     public OnReleaseEvent OnReleaseEvent { get => _onReleaseEvent; }
     protected Pickable GrabbedObject { get => grabbedObject; set => grabbedObject = value; }
 
+    private LogManager _logger;
+
     protected override void Awake()
     {
         base.Awake();
+        _logger = LogManager.Instance;
         GrabbedObject = null;
 
         OnGrabEvent.AddListener(HandleBaseGrab);
@@ -34,6 +39,8 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
         OnReleaseEvent.AddListener(HandleBaseRelease);
 
         OnInteractEvent.AddListener(HandleBaseInteract);
+
+        OnTeleportEvent.AddListener(HandleBaseTeleport);
     }
 
     /**
@@ -41,6 +48,8 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
      */
     private void HandleBaseGrab(Pickable pickable)
     {
+        _logger.Trace("Grabbing " + pickable.name);
+        
         GrabbedObject = pickable;
         pickable.OnPick.Invoke();
     }
@@ -49,10 +58,20 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
      * Handle base release
      */
     private void HandleBaseRelease(ReleasedEvent releasedEvent) {
+        var docker = releasedEvent.GetDocker();
+
+        if (docker != null)
+        {
+            _logger.Trace("Releasing on " + docker.name);
+        }
+        else
+        {
+            _logger.Trace("Releasing");
+        }
+
         GrabbedObject.OnUnPick.Invoke();
 
         var dockable = GrabbedObject.GetComponent<Dockable>();
-        var docker = releasedEvent.GetDocker();
         if (dockable != null && docker != null)
         {
             dockable.OnDock.Invoke(docker);
@@ -67,8 +86,13 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
     private void HandleBaseInteract(Interactable target)
     {
         if (GetComponent<Dockable>() != null && GetComponent<Dockable>().DockedOn == null) return; // TODO : On Fail Interaction Event ? 
-
+        _logger.Trace("Interacting with " + target.name);
         target.OnInteraction.Invoke(GrabbedObject);
+    }
+
+    private void HandleBaseTeleport(Vector3 position)
+    {
+        _logger.Trace("Teleportation to " + position);
     }
 }
 

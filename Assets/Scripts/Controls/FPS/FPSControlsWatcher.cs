@@ -21,50 +21,30 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
     public void Start()
     {
-        OnTeleportEvent.AddListener((Vector3 position) =>
-        {
-            _logger.Trace("Teleportation to " + position);
-        });
-
-        OnGrabEvent.AddListener((Pickable pickable) =>
-        {
-            _logger.Trace("Grabbing " + pickable.name);
-            this.GrabbedObject = pickable;
-        });
-
-        OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
-        {
-            var docker = releasedEvent.GetDocker();
-
-            if (docker != null)
-            {
-                _logger.Trace("Releasing on " + docker.name);
-            }
-            else
-            {
-                _logger.Trace("Releasing");
-            }
-        });
-
-        OnInteractEvent.AddListener((Interactable interactable) =>
-        {
-            _logger.Trace("Interacting with " + interactable.name);
-        });
-
+        // May be the same for VR ?
         OnTeleportEvent.AddListener((Vector3 newPos) =>
         {
             _player.transform.position = newPos;
         });
 
-        Sequence mover = null;
 
+        // Specific for the FPS controls
+        Sequence mover = null;
         OnGrabEvent.AddListener((Pickable pickable) =>
         {
+            var dockable = pickable.GetComponent<Dockable>();
+
             pickable.transform.SetParent(Camera.main.transform);
             mover = DOTween.Sequence();
-            mover = mover.Append(pickable.transform.DOLocalMove(Vector3.forward, .5f).SetEase(Ease.InOutQuad));
+            mover = mover.Append(pickable.transform.DOLocalMove(Vector3.forward + (dockable != null ? dockable.CenterPosition * 0.15f : Vector3.zero), .5f).SetEase(Ease.InOutQuad));
+            
+            if (dockable != null)
+            {
+                var rotationOffset = new Vector3(0, -90, 0); // Because Correct rotation is for the item to dock, not to be picked. 
+                mover.Join(pickable.transform.DOLocalRotate(dockable.CorrectRotation + rotationOffset, .5f).SetEase(Ease.InOutQuad));
+            }
+
             MoveUntilDie(pickable.transform, Camera.main.gameObject, mover);
-            //pickable.GetComponent<Rigidbody>().isKinematic = true;
         });
 
         OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
@@ -163,7 +143,9 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
     internal IEnumerator MoveUntilDie(Transform myTransform, GameObject target, Sequence tweener)
     {
-        while (tweener != null)
+        tweener.onKill += () => tweener = null;
+
+        while (tweener != null && tweener.IsPlaying())
         {
             tweener.Restart();
             yield return new WaitForEndOfFrame();

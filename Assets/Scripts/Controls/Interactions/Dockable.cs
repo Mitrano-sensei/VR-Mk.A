@@ -28,6 +28,8 @@ public class Dockable : Pickable
 
     public OnDocking OnDock { get => _onDock; }
     public List<Docker> DockedOn { get => _dockedOn; set => _dockedOn = value; }
+    public Vector3 CorrectRotation { get => _correctRotation; private set => _correctRotation = value; }
+    public Vector3 CenterPosition { get => _centerPosition; private set => _centerPosition = value; }
 
     protected override void Start()
     {
@@ -36,7 +38,7 @@ public class Dockable : Pickable
         _rb = GetComponent<Rigidbody>();
         if (_rb == null) Debug.LogError("Rigidbody missing on " + gameObject.name);
 
-        if (_correctRotation == null) _correctRotation = new UnityEngine.Vector3(0, 0, 0);
+        if (CorrectRotation == null) CorrectRotation = new UnityEngine.Vector3(0, 0, 0);
 
         if (_constraints.Count == 0)
         {
@@ -152,14 +154,17 @@ public class Dockable : Pickable
     private void DockMovement(Docker docker)
     {
         Sequence sequence = DOTween.Sequence()
-                    .Append(transform.DOMove(docker.transform.position - _centerPosition * 0.15f, 1f).SetEase(Ease.InQuad))     // May be a + instead of a -
-                    .Join(transform.DORotate(_correctRotation, 1f).SetEase(Ease.InQuad))
+                    .AppendCallback(() => transform.SetParent(docker.transform))
+                    .Append(transform.DOLocalMove(CenterPosition, 1f).SetEase(Ease.InQuad))     // May be a + instead of a -
+                    .Join(transform.DOLocalRotate(CorrectRotation, 1f).SetEase(Ease.InQuad))
                     .OnComplete(() =>
                     {
                         if (!docker.IsAvailable) // To verify if we haven't undocked in the meantime
                         {
                             transform.SetParent(docker.transform); // To be sure
-                            transform.localPosition = -_centerPosition;
+                            transform.localPosition = CenterPosition;
+                            transform.localRotation = Quaternion.Euler(CorrectRotation);
+
                         }
                     });
     }
