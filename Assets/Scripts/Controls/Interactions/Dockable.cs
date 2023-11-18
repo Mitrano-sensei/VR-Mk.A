@@ -83,9 +83,12 @@ public class Dockable : Pickable
         var dockManager = DockManager.Instance;
         if (!dockManager.IsDockable(new Vector2(docker.X, docker.Y), _constraints))
         {
+            transform.SetParent(OriginParent);
             _logger.Trace("Trying to dock to an available/active docker with not enough room");
             return;
         }
+
+        _rb.isKinematic = true;
 
         var dockerList = new List<Docker>{docker};
         foreach (var constraint in _constraints)
@@ -105,6 +108,8 @@ public class Dockable : Pickable
 
             d.OnDock.Invoke(onDockEvent);
         }
+
+        DockMovement(docker);
     }
 
     /**
@@ -147,14 +152,14 @@ public class Dockable : Pickable
     private void DockMovement(Docker docker)
     {
         Sequence sequence = DOTween.Sequence()
-                    .Append(transform.DOMove(docker.transform.position - _centerPosition, 1f).SetEase(Ease.InQuad))     // May be a + instead of a -
+                    .Append(transform.DOMove(docker.transform.position - _centerPosition * 0.15f, 1f).SetEase(Ease.InQuad))     // May be a + instead of a -
                     .Join(transform.DORotate(_correctRotation, 1f).SetEase(Ease.InQuad))
                     .OnComplete(() =>
                     {
                         if (!docker.IsAvailable) // To verify if we haven't undocked in the meantime
                         {
                             transform.SetParent(docker.transform); // To be sure
-                            transform.localPosition = new();
+                            transform.localPosition = -_centerPosition;
                         }
                     });
     }
