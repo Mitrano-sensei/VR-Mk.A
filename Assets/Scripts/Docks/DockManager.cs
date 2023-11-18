@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DockManager : Singleton<DockManager>
@@ -107,6 +108,10 @@ public class DockManager : Singleton<DockManager>
     {
         return GetActiveDocks().FindAll(dock => dock.IsAvailable);
     }
-    
+
+    public Docker GetDocker(Vector2 position)
+    {
+        return _docks.SelectMany(i => i).ToList().Find(d => d.X == position.x && d.Y == position.y);
+    }
 
 }

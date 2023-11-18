@@ -64,10 +64,12 @@ public class OnDockEvent {
         DOCK,
         UNDOCK
     }
-
+    public bool IsSecondary { get; set; } = false;
     public Dockable Dockable { get; set; }
     public DockType Type { get; set; }
 }
 
-[Serializable] public class OnDock : UnityEvent<OnDockEvent> { }
+[Serializable] public class OnDock : UnityEvent<OnDockEvent> {
+    
+}
 #endregion
