@@ -19,15 +19,14 @@ public class Docker : MonoBehaviour
     [SerializeField] private Material _activeMaterial;
     [SerializeField] private Material _inactiveMaterial;
 
-    private int _x;
-    private int _y;
     private bool _isActive = true;
     private bool _isAvailable = true;
 
     public bool IsActive { get => _isActive; set => _isActive = value; }
     public bool IsAvailable { get => _isAvailable; set => _isAvailable = value; }
-    public int X { get => _x; set => _x = value; }
-    public int Y { get => _y; set => _y = value; }
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Z { get; set; }
     public OnDock OnDock { get => _onDock; set => _onDock = value; }
 
     private LogManager _logger;
@@ -52,6 +51,8 @@ public class Docker : MonoBehaviour
         OnDock.AddListener(OnUndockHandler);
 
         OnDock.AddListener(e => SetActiveShader());
+
+        transform.localRotation = Quaternion.identity;
     }
 
     private void SetActiveShader()

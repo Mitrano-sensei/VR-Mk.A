@@ -37,8 +37,8 @@ public class FPSControlsWatcher : AbstractControlWatcher
             
             if (dockable != null)
             {
-                var rotationOffset = new Vector3(0, -90, 0); // Because Correct rotation is for the item to dock, not to be picked. 
-                mover.Join(pickable.transform.DOLocalRotate(dockable.CorrectRotation + rotationOffset, .5f).SetEase(Ease.InOutQuad));
+                var rotationOffset = new Vector3(-90, 0, 0); // Because Correct rotation is for the item to dock, not to be picked. 
+                mover.Join(pickable.transform.DOLocalRotate(-dockable.CorrectRotation + rotationOffset, .5f).SetEase(Ease.InOutQuad));
             }
 
             MoveUntilDie(pickable.transform, Camera.main.gameObject, mover);

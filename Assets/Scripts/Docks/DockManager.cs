@@ -2,25 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class DockManager : Singleton<DockManager>
 {
-    [Header("Structure of Mainboard")]
-    [SerializeField] private int _nbDockX = 15;
-    [SerializeField] private int _nbDockY = 6;
-
-    [Description("Position of dock (0,0) in the scene. \nPlease note that X, Y and Z should be respectivly set to right, up and to the player")]
-    [SerializeField] private Transform _docksOrigin;
-    [Description("If true, the origin of the docks will be inverted on the Z axis")]
-    [SerializeField] private bool _invertOriginZ = false;
-
     [Header("Docks")]
     [SerializeField] private Docker _dockPrefab;
-    [SerializeField] private List<Vector2> firstActiveDocksIndex;
+    [SerializeField] private List<Vector3> firstActiveDocksIndex;
+    [SerializeField] private List<DockElement> _dockElements;
 
-    private List<List<Docker>> _docks;
+    private Dictionary<Vector3, Docker> _docks;
 
     public void Start()
     {
@@ -34,38 +27,37 @@ public class DockManager : Singleton<DockManager>
      */
     private void InitializeMainBoard()
     {
-        _docks = new List<List<Docker>>();
+        _docks = new();
 
-        for (int i = 0; i < _nbDockX; i++)
+        foreach (var dockElement in _dockElements)
         {
-            _docks.Add(new List<Docker>());
-            for (int j = 0; j < _nbDockY; j++)
-            {
-                var dock = Instantiate(_dockPrefab, _docksOrigin.position + i * _docksOrigin.right * .15f + j * _docksOrigin.up * .15f, Quaternion.identity, _docksOrigin);
-                dock.X = i;
-                dock.Y = j;
-                dock.IsActive = firstActiveDocksIndex.Contains(new Vector2(i, j));
+            var dock = Instantiate(_dockPrefab, dockElement.DockOrigin.position, Quaternion.identity, dockElement.DockOrigin);
+            dock.X = (int)dockElement.Position.x;
+            dock.Y = (int)dockElement.Position.y;
+            dock.Z = (int)dockElement.Position.z;
+            dock.IsActive = firstActiveDocksIndex.Contains(new(dock.X, dock.Y, dock.Z));
 
-                _docks[i].Add(dock);
-            }
+            _docks.Add(dockElement.Position, dock);
         }
     }
 
-    private bool IsDockable(Vector2 position)
+    private bool IsDockable(Vector3 position)
     {
-        if (position.x < 0 || position.x >= _nbDockX) return false;
-        if (position.y < 0 || position.y >= _nbDockY) return false;
+        if (position.x < 0) return false;
+        if (!_docks.ContainsKey(position)) return false;
 
-        return _docks[(int)position.x][(int)position.y].IsActive;
+        var dock = _docks[position];
+        return dock != null && dock.IsActive;
     }
 
-    public bool IsDockable(Vector2 position, List<Vector2> constraints)
+    public bool IsDockable(Vector3 position, List<Vector2> constraints)
     {
         if (!IsDockable(position)) return false;
 
         foreach(var constraint in constraints)
         {
-            if (!IsDockable(position + constraint)) return false;
+            var constraint3d = new Vector3(constraint.x, constraint.y, 0);      // Adding the 0 because position already hase a Z constraint.
+            if (!IsDockable(position + constraint3d)) return false;
         }
 
         return true;
@@ -78,12 +70,11 @@ public class DockManager : Singleton<DockManager>
             for (int j = -1; j < 2; j++)
             {
                 if (i == 0 && j == 0) continue;
-                if (IsDockable(new Vector2(docker.X + i, docker.Y + j)))
+                var neighbourPosition = new Vector3(docker.X + i, docker.Y + j, docker.Z);
+
+                if (IsDockable(neighbourPosition))
                 {
-                    // TODO : Verifier que ce truc là fonctionne
-                    // FIXME : Ce truc là va probablement poser probleme
-                    // TODO : Enlever ça dès qu'on sait que ça marche pas
-                    yield return _docks[docker.X + i][docker.Y + j];
+                    yield return _docks[neighbourPosition];
                 }
             }
         }
@@ -95,12 +86,12 @@ public class DockManager : Singleton<DockManager>
 
     public List<Docker> GetBuyableDocks()
     {
-        return _docks.SelectMany(i => i).ToList().FindAll(dock => IsBuyable(dock));
+        return _docks.ToList().FindAll(keyValue => IsBuyable(keyValue.Value)).Select(keyValue => keyValue.Value).ToList();
     }
 
     public List<Docker> GetActiveDocks(Boolean active = true)
     {
-        return _docks.SelectMany(i => i).ToList().FindAll(d => d.IsActive == active);
+        return _docks.ToList().FindAll(keyValue => keyValue.Value.IsActive == active).Select(keyValue => keyValue.Value).ToList();
     }
 
     public List<Docker> GetAvailableActiveDocks()
@@ -108,9 +99,21 @@ public class DockManager : Singleton<DockManager>
         return GetActiveDocks().FindAll(dock => dock.IsAvailable);
     }
 
-    public Docker GetDocker(Vector2 position)
+    public Docker GetDocker(Vector3 position)
     {
-        return _docks.SelectMany(i => i).ToList().Find(d => d.X == position.x && d.Y == position.y);
+        return _docks.ToList().Find(keyValue => keyValue.Value.X == position.x && keyValue.Value.Y == position.y && keyValue.Value.Z == position.z).Value;
     }
 
+}
+
+[Serializable]
+public class DockElement
+{
+    [Description(   "Position of the dock on the motherboard. \n" +
+                    "Two docks are neigbours if their (X,Y) position are close (X = X'+-1 || Y = Y'+-1) AND their Z position are the same (Z == Z'). \n" +
+                    "Two neighbour docks should be separated by .15m and should be aligned.")]
+    public Vector3 Position;
+    [Description(   "Origin of the dock. \n" +
+                    "The dock will be instantiated at this position.")]
+    public Transform DockOrigin;
 }

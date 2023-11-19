@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 750f2c8449f37b54e812d7370f835f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _magnitude: 0.1
-  _duration: 2
-  _direction: {x: 0, y: 0, z: 1}
+  _magnitude: 0.05
+  _duration: 3
+  _direction: {x: 0, y: 1, z: 0}
   _randomizeStart: 1

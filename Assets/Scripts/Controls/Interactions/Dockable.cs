@@ -83,7 +83,7 @@ public class Dockable : Pickable
             return;
         }
         var dockManager = DockManager.Instance;
-        if (!dockManager.IsDockable(new Vector2(docker.X, docker.Y), _constraints))
+        if (!dockManager.IsDockable(new (docker.X, docker.Y, docker.Z), _constraints))
         {
             transform.SetParent(OriginParent);
             _logger.Trace("Trying to dock to an available/active docker with not enough room");
@@ -95,7 +95,7 @@ public class Dockable : Pickable
         var dockerList = new List<Docker>{docker};
         foreach (var constraint in _constraints)
         {
-            var d = dockManager.GetDocker(new Vector2(docker.X + constraint.x, docker.Y + constraint.y));
+            var d = dockManager.GetDocker(new Vector3(docker.X + constraint.x, docker.Y + constraint.y, docker.Z));
             dockerList.Add(d);
         }
 
@@ -155,7 +155,7 @@ public class Dockable : Pickable
     {
         Sequence sequence = DOTween.Sequence()
                     .AppendCallback(() => transform.SetParent(docker.transform))
-                    .Append(transform.DOLocalMove(CenterPosition, 1f).SetEase(Ease.InQuad))     // May be a + instead of a -
+                    .Append(transform.DOLocalMove(CenterPosition, 1f).SetEase(Ease.InQuad))
                     .Join(transform.DOLocalRotate(CorrectRotation, 1f).SetEase(Ease.InQuad))
                     .OnComplete(() =>
                     {

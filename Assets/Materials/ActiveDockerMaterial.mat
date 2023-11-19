@@ -37,12 +37,12 @@ Material:
     - _FlickerSpeed: 6.2
     - _Fold: 3
     - _GlitchIntensity: 2
-    - _GlitchSpeed: 1.5
+    - _GlitchSpeed: 28.978222
     - _GlowSpeed: 0
     - _GlowTiling: 0.01
     - _RimPower: 4.93
-    - _ScanSpeed: 0.15
-    - _ScanTiling: 0.8258517
+    - _ScanSpeed: 0.23038942
+    - _ScanTiling: 6
     m_Colors:
     - _MainColor: {r: 0.30146384, g: 0.60661227, b: 0.38907132, a: 1}
     - _RimColor: {r: 0, g: 0.04815674, b: 1, a: 1}
