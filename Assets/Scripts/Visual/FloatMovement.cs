@@ -8,6 +8,8 @@ public class FloatMovement : MonoBehaviour
     [SerializeField] Vector3 _direction = Vector3.up;
     [SerializeField] bool _randomizeStart = true;
 
+    public Vector3 Direction { get => _direction; private set => _direction = value; }
+
     void Start()
     {
         var initialPosition = transform.localPosition;
@@ -19,7 +21,7 @@ public class FloatMovement : MonoBehaviour
         if (_randomizeStart) sequence.PrependInterval(randomDelay);
 
         sequence
-            .Append(transform.DOLocalMove(initialPosition + _direction * _magnitude, _duration/2).SetEase(Ease.InOutSine))
+            .Append(transform.DOLocalMove(initialPosition + Direction * _magnitude, _duration/2).SetEase(Ease.InOutSine))
             .Append(transform.DOLocalMove(initialPosition, _duration/2).SetEase(Ease.InOutSine))
             .SetLoops(-1);
     }

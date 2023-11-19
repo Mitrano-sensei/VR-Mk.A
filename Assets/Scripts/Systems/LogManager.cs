@@ -54,4 +54,5 @@ public class LogManager : Singleton<LogManager>
         Debug.LogError(message);
         LogInGame(message); // TODO : Make it red ? 
     }
+
 }

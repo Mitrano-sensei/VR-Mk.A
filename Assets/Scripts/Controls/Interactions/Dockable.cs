@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
@@ -18,9 +19,14 @@ public class Dockable : Pickable
     
     [Header("Events")]
     [SerializeField] private OnDocking _onDock = new OnDocking();
+    [SerializeField] private OnEject _onEject = new OnEject();
 
     [Header("Constraints")]
     [SerializeField] private List<UnityEngine.Vector2> _constraints = new();
+
+    [Header("Misc")]
+    [Description("The Time in Second the object becomes bouncy after an ejection.")]
+    [SerializeField] private float _bouncyTimeInSeconds = 1f;
 
     private Rigidbody _rb;
     private List<Docker> _dockedOn = new List<Docker>();
@@ -30,6 +36,7 @@ public class Dockable : Pickable
     public List<Docker> DockedOn { get => _dockedOn; set => _dockedOn = value; }
     public Vector3 CorrectRotation { get => _correctRotation; private set => _correctRotation = value; }
     public Vector3 CenterPosition { get => _centerPosition; private set => _centerPosition = value; }
+    public OnEject OnEject { get => _onEject; set => _onEject = value; }
 
     protected override void Start()
     {
@@ -50,6 +57,8 @@ public class Dockable : Pickable
             OnDock.AddListener(ConstrainedDockToObject);
             OnPick.AddListener(ConstrainedUndockObject);
         }
+
+        OnEject.AddListener(EjectHandler);
     }
 
     /**
@@ -75,6 +84,9 @@ public class Dockable : Pickable
         docker.OnDock.Invoke(onDockEvent);
     }
 
+    /**
+     * Docking when the item is constrained, i.e. when it takes more than 1 dockers to dock.
+     */
     private void ConstrainedDockToObject(Docker docker)
     {
         if (!docker.IsAvailable || !docker.IsActive)
@@ -132,6 +144,9 @@ public class Dockable : Pickable
         DockedOn.Clear();
     }
 
+    /**
+     * UnDocking when the item is constrained, i.e. when it takes more than 1 dockers to dock.
+     */
     private void ConstrainedUndockObject()
     {
         if (DockedOn.Count == 0) return;
@@ -149,6 +164,49 @@ public class Dockable : Pickable
         DockedOn.Clear();
     }
 
+    /**
+     * Behavior when the object is ejected.
+     */
+    public void EjectHandler(EjectEvent ejectEvent)
+    {
+        if (DockedOn.Count == 0) return;
+        if (_constraints.Count == 0)    SimpleUndockObject();
+        else                            ConstrainedUndockObject();
+
+        // Create a random direction in the demi sphere centered on floatingDirection
+        var randomDirection = UnityEngine.Random.insideUnitSphere;
+        randomDirection = (Vector3.Dot(randomDirection, ejectEvent.EjectDirection) < 0 ? -1 : 1) * randomDirection;
+
+        // Push the dockable up a little bedore ejecting it
+        _rb.transform.position += ejectEvent.EjectDirection * 0.2f;
+        _rb.isKinematic = false;
+        _rb.AddForce(randomDirection.normalized * 10, ForceMode.Impulse);
+
+        // Make the material super bouncy for 3 seconds
+        var originalMaterial = GetComponent<Collider>().material;
+        var superBouncyMaterial = new PhysicMaterial
+        {
+            bounciness = 1f,
+            dynamicFriction = originalMaterial.dynamicFriction,
+            staticFriction = originalMaterial.staticFriction,
+            frictionCombine = originalMaterial.frictionCombine,
+            bounceCombine = PhysicMaterialCombine.Maximum
+        };
+
+        StartCoroutine(MakeSuperBouncy(originalMaterial, superBouncyMaterial, _bouncyTimeInSeconds));
+    }
+
+    /**
+     * Makes the material super bouncy for a given time.
+     */
+    private IEnumerator MakeSuperBouncy(PhysicMaterial originalMaterial, PhysicMaterial superBouncyMaterial, float timeInSeconds)
+    {
+        GetComponent<Collider>().material = superBouncyMaterial;
+        yield return new WaitForSeconds(timeInSeconds);
+        GetComponent<Collider>().material = originalMaterial;
+    }
+
+
     #region Movements
 
     private void DockMovement(Docker docker)
@@ -164,7 +222,6 @@ public class Dockable : Pickable
                             transform.SetParent(docker.transform); // To be sure
                             transform.localPosition = CenterPosition;
                             transform.localRotation = Quaternion.Euler(CorrectRotation);
-
                         }
                     });
     }
@@ -179,4 +236,18 @@ public class Dockable : Pickable
  * The docker is passed as a parameter.
  */
 [Serializable] public class OnDocking : UnityEvent<Docker> { }
+/**
+ * Event invoked when a dockable object is ejected from a docker.
+ */
+[Serializable] public class OnEject : UnityEvent<EjectEvent> { }
+
+public class EjectEvent
+{
+    public Vector3 EjectDirection;
+
+    public EjectEvent(Vector3 ejectDirection = new Vector3())
+    {
+        EjectDirection = ejectDirection;
+    }
+}
 #endregion

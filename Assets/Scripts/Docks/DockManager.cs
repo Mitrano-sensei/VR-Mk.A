@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -22,8 +21,8 @@ public class DockManager : Singleton<DockManager>
 
 
     /**
-     * Intantiate every docks and save them in a 2D array.
-     * Initialize each docks to inActive (except the first ones).
+     * Intantiate every docks and save them in a Dictionnary with their position as key.
+     * Initialize each docks to inactive (except those whose positions are in firstActiveDocksIndex).
      */
     private void InitializeMainBoard()
     {
@@ -41,6 +40,9 @@ public class DockManager : Singleton<DockManager>
         }
     }
 
+    /*
+     * Returns true if the given position is dockable.
+     */
     private bool IsDockable(Vector3 position)
     {
         if (position.x < 0) return false;
@@ -50,6 +52,9 @@ public class DockManager : Singleton<DockManager>
         return dock != null && dock.IsActive;
     }
 
+    /**
+     * Returns true if the given position is dockable and if all the constraints are dockable.
+     */
     public bool IsDockable(Vector3 position, List<Vector2> constraints)
     {
         if (!IsDockable(position)) return false;
@@ -63,6 +68,9 @@ public class DockManager : Singleton<DockManager>
         return true;
     }
 
+    /**
+     * Returns a list of neighbour dockers.
+     */
     public IEnumerable<Docker> GetNeighbours(Docker docker)
     {
         for (int i = -1; i < 2; i++)
@@ -79,29 +87,70 @@ public class DockManager : Singleton<DockManager>
             }
         }
     }
+    /**
+     * Returns true if the given docker is buyable.
+     */
     public bool IsBuyable(Docker dock)
     {
         return !dock.IsActive && GetNeighbours(dock).ToList().FindAll(d => d.IsActive).Count > 0;
     }
 
+    /**
+     * Returns a list of buyable dockers.
+     */
     public List<Docker> GetBuyableDocks()
     {
         return _docks.ToList().FindAll(keyValue => IsBuyable(keyValue.Value)).Select(keyValue => keyValue.Value).ToList();
     }
 
-    public List<Docker> GetActiveDocks(Boolean active = true)
+    /**
+     * Returns a list of active dockers.
+     */
+    private List<Docker> GetActiveDockers(Boolean active = true)
     {
         return _docks.ToList().FindAll(keyValue => keyValue.Value.IsActive == active).Select(keyValue => keyValue.Value).ToList();
     }
 
-    public List<Docker> GetAvailableActiveDocks()
+    /**
+     * Returns a list of available dockers. A docker is available if it is active and not docked.
+     */
+    public List<Docker> GetAvailableActiveDockers()
     {
-        return GetActiveDocks().FindAll(dock => dock.IsAvailable);
+        return GetActiveDockers().FindAll(dock => dock.IsAvailable);
     }
 
+    /**
+     * Returns the docker at the given position.
+     */
     public Docker GetDocker(Vector3 position)
     {
         return _docks.ToList().Find(keyValue => keyValue.Value.X == position.x && keyValue.Value.Y == position.y && keyValue.Value.Z == position.z).Value;
+    }
+
+    /**
+     * Returns a list of used dockers.
+     */
+    private List<Docker> GetUsedDockers()
+    {
+        return _docks.ToList().FindAll(keyValue => keyValue.Value.DockedObject != null).Select(keyValue => keyValue.Value).ToList();
+    }
+
+    /**
+     * Returns a random used docker.
+     */
+    public Docker GetRandomUsedDocker()
+    {
+        var usedDockers = GetUsedDockers();
+        if (usedDockers.Count == 0) return null;
+        return usedDockers[UnityEngine.Random.Range(0, usedDockers.Count)];
+    }
+
+    /**
+     * Calls Eject() on a random docker.
+     */
+    public void EjectRandomDocker()
+    {
+        GetRandomUsedDocker()?.Eject();
     }
 
 }

@@ -201,10 +201,16 @@ MonoBehaviour:
   _onUnPick:
     m_PersistentCalls:
       m_Calls: []
-  _correctRotation: {x: 0, y: 0, z: 0}
+  _correctRotation: {x: -90, y: 0, z: 0}
+  _centerPosition: {x: 0, y: 0, z: 0}
   _onDock:
     m_PersistentCalls:
       m_Calls: []
+  _onEject:
+    m_PersistentCalls:
+      m_Calls: []
+  _constraints: []
+  _bouncyTimeInSeconds: 1
 --- !u!1 &8958322584663656821
 GameObject:
   m_ObjectHideFlags: 0
