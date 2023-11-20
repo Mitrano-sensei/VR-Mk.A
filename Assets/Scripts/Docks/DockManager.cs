@@ -9,7 +9,7 @@ public class DockManager : Singleton<DockManager>
 {
     [Header("Docks")]
     [SerializeField] private Docker _dockPrefab;
-    [SerializeField] private List<Vector3> firstActiveDocksIndex;
+    [SerializeField] private List<Vector3> _firstActiveDocksIndex;
     [SerializeField] private List<DockElement> _dockElements;
 
     private Dictionary<Vector3, Docker> _docks;
@@ -34,7 +34,7 @@ public class DockManager : Singleton<DockManager>
             dock.X = (int)dockElement.Position.x;
             dock.Y = (int)dockElement.Position.y;
             dock.Z = (int)dockElement.Position.z;
-            dock.IsActive = firstActiveDocksIndex.Contains(new(dock.X, dock.Y, dock.Z));
+            dock.IsActive = _firstActiveDocksIndex.Contains(new(dock.X, dock.Y, dock.Z));
 
             _docks.Add(dockElement.Position, dock);
         }
@@ -73,9 +73,9 @@ public class DockManager : Singleton<DockManager>
      */
     public IEnumerable<Docker> GetNeighbours(Docker docker)
     {
-        for (int i = -1; i < 2; i++)
+        for (int i = -1; i <= 1; i++)
         {
-            for (int j = -1; j < 2; j++)
+            for (int j = -1; j <= 1; j++)
             {
                 if (i == 0 && j == 0) continue;
                 var neighbourPosition = new Vector3(docker.X + i, docker.Y + j, docker.Z);

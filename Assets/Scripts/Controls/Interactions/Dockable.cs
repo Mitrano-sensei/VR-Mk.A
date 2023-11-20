@@ -13,7 +13,7 @@ public class Dockable : Pickable
 {
     [Header("Position")]
     [Description("Rotation so that the object is correctly docked")]
-    [SerializeField] private UnityEngine.Vector3 _correctRotation;
+    [SerializeField] private Vector3 _correctRotation;
     [Description("The position of the main point that will be docked")]
     [SerializeField] private Vector3 _centerPosition = new (0, 0, 0);
     
@@ -22,7 +22,7 @@ public class Dockable : Pickable
     [SerializeField] private OnEject _onEject = new OnEject();
 
     [Header("Constraints")]
-    [SerializeField] private List<UnityEngine.Vector2> _constraints = new();
+    [SerializeField] private List<Vector2> _constraints = new();
 
     [Header("Misc")]
     [Description("The Time in Second the object becomes bouncy after an ejection.")]
@@ -45,7 +45,7 @@ public class Dockable : Pickable
         _rb = GetComponent<Rigidbody>();
         if (_rb == null) Debug.LogError("Rigidbody missing on " + gameObject.name);
 
-        if (CorrectRotation == null) CorrectRotation = new UnityEngine.Vector3(0, 0, 0);
+        if (CorrectRotation == null) CorrectRotation = new Vector3(0, 0, 0);
 
         if (_constraints.Count == 0)
         {
