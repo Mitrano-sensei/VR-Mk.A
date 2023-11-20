@@ -1,14 +1,7 @@
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
-using static UnityEngine.GraphicsBuffer;
 
 /**
  * Controls watcher for the FPS controls.
@@ -18,60 +11,37 @@ public class FPSControlsWatcher : AbstractControlWatcher
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _cockpitEnvironment;
 
-    private LogManager _logger;
-
     protected override void Awake()
     {
         base.Awake();
-        _logger = LogManager.Instance;
     }
 
     public void Start()
     {
-        OnTeleportEvent.AddListener((Vector3 position) =>
-        {
-            _logger.Trace("Teleportation to " + position);
-        });
-
-        OnGrabEvent.AddListener((Pickable pickable) =>
-        {
-            _logger.Trace("Grabbing " + pickable.name);
-            this.GrabbedObject = pickable;
-        });
-
-        OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
-        {
-            var docker = releasedEvent.GetDocker();
-
-            if (docker != null)
-            {
-                _logger.Trace("Releasing on " + docker.name);
-            }
-            else
-            {
-                _logger.Trace("Releasing");
-            }
-        });
-
-        OnInteractEvent.AddListener((Interactable interactable) =>
-        {
-            _logger.Trace("Interacting with " + interactable.name);
-        });
-
+        // May be the same for VR ?
         OnTeleportEvent.AddListener((Vector3 newPos) =>
         {
             _player.transform.position = newPos;
         });
 
-        Sequence mover = null;
 
+        // Specific for the FPS controls
+        Sequence mover = null;
         OnGrabEvent.AddListener((Pickable pickable) =>
         {
+            var dockable = pickable.GetComponent<Dockable>();
+
             pickable.transform.SetParent(Camera.main.transform);
             mover = DOTween.Sequence();
-            mover = mover.Append(pickable.transform.DOLocalMove(Vector3.forward, .5f).SetEase(Ease.InOutQuad));
+            mover = mover.Append(pickable.transform.DOLocalMove(Vector3.forward + (dockable != null ? dockable.CenterPosition * 0.15f : Vector3.zero), .5f).SetEase(Ease.InOutQuad));
+            
+            if (dockable != null)
+            {
+                var rotationOffset = new Vector3(-90, 0, 0); // Because Correct rotation is for the item to dock, not to be picked. 
+                mover.Join(pickable.transform.DOLocalRotate(-dockable.CorrectRotation + rotationOffset, .5f).SetEase(Ease.InOutQuad));
+            }
+
             MoveUntilDie(pickable.transform, Camera.main.gameObject, mover);
-            //pickable.GetComponent<Rigidbody>().isKinematic = true;
         });
 
         OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
@@ -79,11 +49,11 @@ public class FPSControlsWatcher : AbstractControlWatcher
             mover?.Kill();
             mover = null;
 
-            if (releasedEvent.GetDocker() != null) return;     // Here we let base OnDock event handle the docking.
+            if (releasedEvent.GetDocker() != null && releasedEvent.GetDocker().IsActive && releasedEvent.GetDocker().IsAvailable) return;     // Here we let base OnDock event handle the docking.
 
             var releasedObject = releasedEvent.ReleasedObject;
             var rb = releasedObject.GetComponent<Rigidbody>();
-            releasedObject.transform.SetParent(releasedObject.OriginParent ?  releasedObject.OriginParent : _cockpitEnvironment.transform);
+            releasedObject.transform.SetParent(releasedObject.OriginParent != null ?  releasedObject.OriginParent : _cockpitEnvironment.transform);
         });
     }
 
@@ -170,7 +140,9 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
     internal IEnumerator MoveUntilDie(Transform myTransform, GameObject target, Sequence tweener)
     {
-        while (tweener != null)
+        tweener.onKill += () => tweener = null;
+
+        while (tweener != null && tweener.IsPlaying())
         {
             tweener.Restart();
             yield return new WaitForEndOfFrame();

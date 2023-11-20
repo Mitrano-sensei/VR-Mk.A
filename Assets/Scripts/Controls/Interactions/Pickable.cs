@@ -14,11 +14,15 @@ public class Pickable : MonoBehaviour
 
     public OnPickEvent OnPick { get => _onPick; }
     public OnUnPickEvent OnUnPick { get => _onUnPick; }
-    public Transform OriginParent { get => _originParent; }
+    public Transform OriginParent { get => _originParent; set => _originParent = value; }
+
+    void Awake()
+    {
+        _originParent = transform.parent;
+    }
 
     protected virtual void Start()
     {
-        _originParent = transform.parent;
         Rigidbody rb = gameObject.GetComponent<Rigidbody>();
 
         OnPick.AddListener(() =>

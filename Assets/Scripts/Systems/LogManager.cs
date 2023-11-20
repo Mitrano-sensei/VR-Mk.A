@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LogManager : Singleton<LogManager>
 {
@@ -49,6 +47,12 @@ public class LogManager : Singleton<LogManager>
     public void Clear()
     {
         _inGameConsole.text = string.Empty;
+    }
+
+    internal void Error(string message)
+    {
+        Debug.LogError(message);
+        LogInGame(message); // TODO : Make it red ? 
     }
 
 }
