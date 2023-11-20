@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * Compute the average speed of the object over the last _bufferSize frames.
+ */
 public class VelocityCalculator : MonoBehaviour
 {
     private Queue<Vector3> _lastPositions = new();
@@ -28,6 +31,10 @@ public class VelocityCalculator : MonoBehaviour
         }
     }
 
+    /**
+     * Compute the velocity over the last frames using their respective deltaTimes.
+     * Used in the Velocity getter.
+     */
     private Vector3 ComputeVelocity()
     {
         var positionList = LastPositions.ToArray();
