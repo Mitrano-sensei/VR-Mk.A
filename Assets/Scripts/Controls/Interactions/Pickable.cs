@@ -35,7 +35,6 @@ public class Pickable : MonoBehaviour
         OnUnPick.AddListener(() => {
             rb.isKinematic = false;
             rb.velocity = _velocityCalculator.Velocity;
-            Debug.Log(_velocityCalculator.Velocity);
         });
 
 
