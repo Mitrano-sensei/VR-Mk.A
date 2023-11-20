@@ -11,10 +11,12 @@ public class Pickable : MonoBehaviour
     [SerializeField] private OnUnPickEvent _onUnPick = new OnUnPickEvent();
 
     private Transform _originParent;
+    private VelocityCalculator _velocityCalculator;
 
     public OnPickEvent OnPick { get => _onPick; }
     public OnUnPickEvent OnUnPick { get => _onUnPick; }
     public Transform OriginParent { get => _originParent; set => _originParent = value; }
+
 
     void Awake()
     {
@@ -32,7 +34,16 @@ public class Pickable : MonoBehaviour
 
         OnUnPick.AddListener(() => {
             rb.isKinematic = false;
+            rb.velocity = _velocityCalculator.Velocity;
+            Debug.Log(_velocityCalculator.Velocity);
         });
+
+
+        if (GetComponent<VelocityCalculator>() == null)
+        {
+            gameObject.AddComponent<VelocityCalculator>();
+        }
+        _velocityCalculator = GetComponent<VelocityCalculator>();
     }
 }
 
