@@ -1564,7 +1564,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4690143699752417383, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.09362793
+      value: -0.09313965
       objectReference: {fileID: 0}
     - target: {fileID: 6107694177497397987, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_RootOrder
@@ -1632,6 +1632,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
       propertyPath: firstActiveDocksIndex.Array.data[4].x
       value: 1
       objectReference: {fileID: 0}
@@ -1695,6 +1699,78 @@ PrefabInstance:
       propertyPath: _dockElements.Array.data[9].DockOrigin
       value: 
       objectReference: {fileID: 1837904665}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[0].x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[0].y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[0].z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[1].x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[1].y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[1].z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[2].x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[2].y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[2].z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[3].x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[3].y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[3].z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[4].x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[4].y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[4].z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[5].x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[5].y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
+      propertyPath: _firstActiveDocksIndex.Array.data[5].z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6835511737293960356, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
       propertyPath: _dockElements.Array.data[10].DockOrigin
       value: 

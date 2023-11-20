@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 /**
@@ -7,14 +7,16 @@ using UnityEngine;
  */
 public class VelocityCalculator : MonoBehaviour
 {
-    private Queue<Vector3> _lastPositions = new();
-    private Queue<float> _lastDeltaTime = new();
-    [SerializeField]
-    private int _bufferSize = 5;
+    [Header("Parameters")]
+    [Description("Number of frames used to compute velocity")]
+    [SerializeField] private int _bufferSize = 5;
 
     public Vector3 Velocity { get => ComputeVelocity(); }
     public Queue<Vector3> LastPositions { get => _lastPositions; set => _lastPositions = value; }
     public Queue<float> LastDeltaTime { get => _lastDeltaTime; set => _lastDeltaTime = value; }
+
+    private Queue<Vector3> _lastPositions = new();
+    private Queue<float> _lastDeltaTime = new();
 
     void Update()
     {
