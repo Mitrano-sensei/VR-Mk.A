@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class SingleUseItem : UsableItem
+public class SingleUseItem : UsableItem
 {
     protected override void Start()
     {
@@ -8,8 +8,8 @@ public abstract class SingleUseItem : UsableItem
 
         OnUse.AddListener(
             (e) => {
-                if (!CanBeUsedOn(e.UsedOn)) return;
-                FPSControlsWatcher.Instance.OnReleaseEvent.Invoke(new ReleasedEvent(this, null));
+                if (!base.CanBeUsedOn(e.UsedOn)) return;
+                AbstractControlWatcher.Instance.OnReleaseEvent.Invoke(new ReleasedEvent(this, null));
                 gameObject.SetActive(false);
             });
     }

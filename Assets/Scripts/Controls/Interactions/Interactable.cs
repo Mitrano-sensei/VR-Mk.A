@@ -1,6 +1,5 @@
+using Palmmedia.ReportGenerator.Core.Logging;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,6 +10,25 @@ public class Interactable : MonoBehaviour
 {
     [SerializeField] private OnInteractionEvent _onInteraction = new OnInteractionEvent();
     public OnInteractionEvent OnInteraction { get => _onInteraction; }
+
+    protected LogManager _logger;
+
+    protected void Start()
+    {
+        _logger = LogManager.Instance;
+
+        OnInteraction.AddListener((InteractEvent e) => { _logger.Trace("Interacted with " + name + (e.InteractedWith != null ? " while holding " + e.InteractedWith.name : "")); });
+        OnInteraction.AddListener(HandleBaseInteraction);
+    }
+
+    public void HandleBaseInteraction(InteractEvent interactEvent)
+    {
+        var usable = interactEvent.InteractedWith?.GetComponent<UsableItem>();
+        if (usable != null)
+        {
+            usable.OnUse.Invoke(new UseEvent(this));
+        }
+    }
 }
 
 #region Events
@@ -22,10 +40,10 @@ public class Interactable : MonoBehaviour
 
 public class InteractEvent
 {
-    public Pickable Pickable { get; set; }
+    public Pickable InteractedWith { get; set; }
     public InteractEvent(Pickable pickable)
     {
-        Pickable = pickable;
+        InteractedWith = pickable;
     }
 }
 #endregion
