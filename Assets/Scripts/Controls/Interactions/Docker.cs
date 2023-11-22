@@ -137,6 +137,9 @@ public class Docker : MonoBehaviour
             SetActiveShader();
     }
 
+    /**
+     * Buy this docker. Note that verification should be made by the caller.
+     */
     public void Buy()
     {
         IsActive = true;
