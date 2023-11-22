@@ -136,6 +136,12 @@ public class Docker : MonoBehaviour
         else
             SetActiveShader();
     }
+
+    public void Buy()
+    {
+        IsActive = true;
+        SetActiveShader();
+    }
 }
 
 #region Events

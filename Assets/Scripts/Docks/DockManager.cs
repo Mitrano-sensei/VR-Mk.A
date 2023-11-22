@@ -77,7 +77,10 @@ public class DockManager : Singleton<DockManager>
         {
             for (int j = -1; j <= 1; j++)
             {
-                if (i == 0 && j == 0) continue;
+                bool isOrigin = i == 0 && j == 0;
+                bool isDiagonal = i != 0 && j != 0;
+
+                if (isDiagonal || isOrigin) continue;
                 var neighbourPosition = new Vector3(docker.X + i, docker.Y + j, docker.Z);
 
                 if (IsDockable(neighbourPosition))

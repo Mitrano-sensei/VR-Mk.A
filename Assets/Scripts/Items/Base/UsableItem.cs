@@ -33,13 +33,18 @@ public class UsableItem : Pickable
     /**
      * Returns true if this item is usable in the given situation.
      */
-    protected bool CanBeUsedOn(Interactable obj = null) => obj != null ? CanBeUsedOnObject(obj) : CanBeUsedOnGround();
+    protected bool CanBeUsedOn(GameObject obj = null)
+    {
+        if (obj == null)
+            return CanBeUsedOnGround();
+        else return CanBeUsedOnObject(obj) || CanBeUsedOnGround();
+    }
 
     /**
      * Returns true if this item is usable on the given object.
      * Subclasses can override this method to specify which objects can be used on.
      */
-    protected virtual bool CanBeUsedOnObject(Interactable obj) => true;
+    protected virtual bool CanBeUsedOnObject(GameObject obj) => true;
 
     /**
      * Returns true if this item is usable on the ground.
@@ -52,10 +57,10 @@ public class UsableItem : Pickable
 
 [Serializable] public class OnUse : UnityEvent<UseEvent> { }
 public class UseEvent {
-    private Interactable _usedOn;
-    public Interactable UsedOn { get => _usedOn; }
+    private GameObject _usedOn;
+    public GameObject UsedOn { get => _usedOn; }
     
-    public UseEvent(Interactable usedOn = null) => _usedOn = usedOn;
+    public UseEvent(GameObject usedOn = null) => _usedOn = usedOn;
     public UseEvent() { }
 }
 #endregion

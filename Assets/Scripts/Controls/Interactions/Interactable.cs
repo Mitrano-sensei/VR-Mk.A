@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 /**
  * Objects that can be interacted with.
- * */
+ */
 public class Interactable : MonoBehaviour
 {
     [SerializeField] private OnInteractionEvent _onInteraction = new OnInteractionEvent();
@@ -24,10 +24,6 @@ public class Interactable : MonoBehaviour
     public void HandleBaseInteraction(InteractEvent interactEvent)
     {
         var usable = interactEvent.InteractedWith?.GetComponent<UsableItem>();
-        if (usable != null)
-        {
-            usable.OnUse.Invoke(new UseEvent(this));
-        }
     }
 }
 
