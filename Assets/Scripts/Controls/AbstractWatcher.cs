@@ -1,9 +1,6 @@
-using Palmmedia.ReportGenerator.Core.Logging;
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 
 /**
  * A watcher that defines a common interface for all control watchers.
@@ -87,7 +84,7 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
     {
         if (GetComponent<Dockable>() != null && GetComponent<Dockable>().DockedOn == null) return; // TODO : On Fail Interaction Event ? 
         _logger.Trace("Interacting with " + target.name);
-        target.OnInteraction.Invoke(GrabbedObject);
+        target.OnInteraction.Invoke(new InteractEvent(GrabbedObject));
     }
 
     private void HandleBaseTeleport(Vector3 position)

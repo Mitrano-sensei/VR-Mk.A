@@ -153,6 +153,18 @@ public class DockManager : Singleton<DockManager>
         GetRandomUsedDocker()?.Eject();
     }
 
+    /**
+     * Highlight every buyable dockers.
+     * If highlight is false, unhighlight every buyable dockers.
+     * Note that if you want to unhighlight a specific docker, you should call this BEFORE buying it.
+     */
+    public void HighlightBuyableDocks(bool highlight = true)
+    {
+        foreach (var docker in GetBuyableDocks())
+        {
+            docker.OnHighlightBuy.Invoke(new HighlightBuyEvent(highlight));
+        }
+    }
 }
 
 [Serializable]

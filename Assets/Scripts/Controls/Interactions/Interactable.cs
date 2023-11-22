@@ -18,5 +18,14 @@ public class Interactable : MonoBehaviour
  * Event invoked when the player interacts with an interactable object. 
  * The player can hold a pickable item while doing it, if so it is passed as a parameter, else it is null.
  */
-[Serializable] public class OnInteractionEvent : UnityEvent<Pickable> { }
+[Serializable] public class OnInteractionEvent : UnityEvent<InteractEvent> { }
+
+public class InteractEvent
+{
+    public Pickable Pickable { get; set; }
+    public InteractEvent(Pickable pickable)
+    {
+        Pickable = pickable;
+    }
+}
 #endregion

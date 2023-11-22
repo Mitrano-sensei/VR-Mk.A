@@ -1,3 +1,4 @@
+using Palmmedia.ReportGenerator.Core.Logging;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,6 +8,7 @@ using UnityEngine.Events;
  */
 public class Pickable : MonoBehaviour
 {
+    [Header("Events")]
     [SerializeField] private OnPickEvent _onPick = new OnPickEvent();
     [SerializeField] private OnUnPickEvent _onUnPick = new OnUnPickEvent();
 
@@ -17,6 +19,7 @@ public class Pickable : MonoBehaviour
     public OnUnPickEvent OnUnPick { get => _onUnPick; }
     public Transform OriginParent { get => _originParent; set => _originParent = value; }
 
+    protected LogManager _logger;
 
     void Awake()
     {
@@ -25,6 +28,8 @@ public class Pickable : MonoBehaviour
 
     protected virtual void Start()
     {
+        _logger = LogManager.Instance;
+
         Rigidbody rb = gameObject.GetComponent<Rigidbody>();
 
         OnPick.AddListener(() =>

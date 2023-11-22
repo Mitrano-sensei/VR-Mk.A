@@ -114,9 +114,13 @@ MonoBehaviour:
   _onDock:
     m_PersistentCalls:
       m_Calls: []
-  _highlightBuyMaterial: {fileID: 0}
+  _onHighlightBuy:
+    m_PersistentCalls:
+      m_Calls: []
+  _highlightBuyMaterial: {fileID: 2100000, guid: ceed9c922bd8fcf4a88aad3466d70a7a, type: 2}
   _activeMaterial: {fileID: 2100000, guid: 983abefd29f1bc94b8c163235abf7ed7, type: 2}
   _inactiveMaterial: {fileID: 2100000, guid: 66e199430ded8a74fa47580d7a7d9225, type: 2}
+  _components: []
 --- !u!114 &8915568232425242252
 MonoBehaviour:
   m_ObjectHideFlags: 0

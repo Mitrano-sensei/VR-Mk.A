@@ -30,7 +30,6 @@ public class Dockable : Pickable
 
     private Rigidbody _rb;
     private List<Docker> _dockedOn = new List<Docker>();
-    private LogManager _logger;
 
     public OnDocking OnDock { get => _onDock; }
     public List<Docker> DockedOn { get => _dockedOn; set => _dockedOn = value; }
