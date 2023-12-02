@@ -29,7 +29,7 @@ public class GameManager : Singleton<GameManager>
 
     private void OnHealthChangeHandler(OnHealthChangeEvent onHealthChangeEvent)
     {
-        CurrentHealth += onHealthChangeEvent.Amount;
+        CurrentHealth = Math.Clamp(CurrentHealth + onHealthChangeEvent.Amount, 0, _maxHealth);
         _logger.Trace("Health remaining: " + CurrentHealth);
         if (CurrentHealth <= 0)
         {
