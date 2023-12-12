@@ -28,7 +28,10 @@ public class HealthBar : MonoBehaviour
         }
         PaintHealthBarUnits();
     }
-
+    
+    /**
+     * Turn On every unit that should be on (i.e. every unit that is less than or equal to the current health) and turns other off.
+     */
     void PaintHealthBarUnits()
     {
         for (int i=0; i < _units.Length; i++)
@@ -44,8 +47,5 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    void PaintHealthBarUnitsListener(OnHealthChangeDoneEvent onHealthChangeDoneEvent)
-    {
-        PaintHealthBarUnits();
-    }
+    void PaintHealthBarUnitsListener(OnHealthChangeDoneEvent onHealthChangeDoneEvent) => PaintHealthBarUnits();
 }

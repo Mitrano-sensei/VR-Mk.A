@@ -12,17 +12,23 @@ public class HealthBarUnit : MonoBehaviour
 
     public Renderer Renderer { get => _renderer; }
 
-    private void Start()
+    private void Awake()
     {
         _renderer = GetComponent<Renderer>();
         TurnOn();
     }
 
+    /**
+     * Turn on the unit.
+     */
     public void TurnOn()
     {
         Renderer.material = _onMaterial;
     }
 
+    /**
+     * Turn off the unit.
+     */
     public void TurnOff()
     {
         Renderer.material = _offMaterial;
