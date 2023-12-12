@@ -49,7 +49,7 @@ public class DockManager : Singleton<DockManager>
         if (!_docks.ContainsKey(position)) return false;
 
         var dock = _docks[position];
-        return dock != null && dock.IsActive;
+        return dock != null && dock.IsActive && dock.IsAvailable;
     }
 
     /**
