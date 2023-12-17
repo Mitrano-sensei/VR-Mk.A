@@ -7,8 +7,8 @@ public class HealthBar : MonoBehaviour
     private GameManager _gm;
     private HealthBarUnit[] _units;
 
-    [SerializeField] private HealthBarUnit _unit_prefab;
-    [SerializeField] private float _span = 2f; // C'est dur les noms
+    [SerializeField] private HealthBarUnit _unit_prefab; // Prefab for one unit ("heart") of health in the bar
+    [SerializeField] private float _span = 2f; // The length of the health bar
     
 
     void Start()
@@ -17,12 +17,12 @@ public class HealthBar : MonoBehaviour
         _gm.OnHealthChangeDone.AddListener(PaintHealthBarUnitsListener);
 
         _units = new HealthBarUnit[_gm.MaxHealth];
-        float interval = _span / _units.Length;
+        float interval = _span / _units.Length; // Distance between each health bar unit
         for (int i=0; i < _units.Length; i++)
         {
             _units[i] = Instantiate(
                 _unit_prefab,
-                transform.position - new Vector3(-2 * interval * i + _span - interval, 0, 0),
+                transform.position - new Vector3(-2 * interval * i + _span - interval, 0, 0), // Center and envenly space units
                 transform.rotation,
                 transform);
         }
