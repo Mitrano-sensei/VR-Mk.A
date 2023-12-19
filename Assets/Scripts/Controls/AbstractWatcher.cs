@@ -84,7 +84,7 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
     {
         if (GetComponent<Dockable>() != null && GetComponent<Dockable>().DockedOn == null) return; // TODO : On Fail Interaction Event ? 
         _logger.Trace("Interacting with " + target.name);
-        target.OnInteraction.Invoke(new InteractEvent(GrabbedObject));
+        target.Interact(new InteractEvent(GrabbedObject));
     }
 
     private void HandleBaseTeleport(Vector3 position)

@@ -1,4 +1,3 @@
-using Palmmedia.ReportGenerator.Core.Logging;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,7 +8,6 @@ using UnityEngine.Events;
 public class Interactable : MonoBehaviour
 {
     [SerializeField] private OnInteractionEvent _onInteraction = new OnInteractionEvent();
-    public OnInteractionEvent OnInteraction { get => _onInteraction; }
 
     protected LogManager _logger;
 
@@ -17,13 +15,23 @@ public class Interactable : MonoBehaviour
     {
         _logger = LogManager.Instance;
 
-        OnInteraction.AddListener((InteractEvent e) => { _logger.Trace("Interacted with " + name + (e.InteractedWith != null ? " while holding " + e.InteractedWith.name : "")); });
-        OnInteraction.AddListener(HandleBaseInteraction);
+        _onInteraction.AddListener((InteractEvent e) => { _logger.Trace("Interacted with " + name + (e.InteractedWith != null ? " while holding " + e.InteractedWith.name : "")); });
     }
 
-    public void HandleBaseInteraction(InteractEvent interactEvent)
+    /**
+     * Manage the interaction of the object
+     */
+    public void Interact(InteractEvent interactEvent)
     {
-        var usable = interactEvent.InteractedWith?.GetComponent<UsableItem>();
+        var dockable = GetComponent<Dockable>();
+
+        if (dockable != null && dockable.DockedOn.Count == 0)
+        { 
+            _logger.Trace("Tried to interact with " + name + " while not docked");
+            return;
+        }
+
+        _onInteraction.Invoke(interactEvent);        
     }
 }
 
