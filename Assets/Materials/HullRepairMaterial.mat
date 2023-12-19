@@ -44,6 +44,6 @@ Material:
     - _ScanSpeed: 0.22582045
     - _ScanTiling: 6
     m_Colors:
-    - _MainColor: {r: 0, g: 0.82234293, b: 0.9811321, a: 1}
+    - _MainColor: {r: 0.20005961, g: 0.98039216, b: 0, a: 1}
     - _RimColor: {r: 0.24905658, g: 0.9010359, b: 1, a: 1}
   m_BuildTextureStacks: []
