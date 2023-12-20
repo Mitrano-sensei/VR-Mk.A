@@ -11,6 +11,7 @@ public class Docker : MonoBehaviour
 {
     [Header("Events")]
     [SerializeField] private OnDock _onDock = new OnDock();
+    [SerializeField] private OnHighlightBuy _onHighlightBuy = new OnHighlightBuy();
 
     [Header("Materials")]
     [Description("The material that will be applied to the docker when it is highlighted for purchase")]
@@ -19,7 +20,6 @@ public class Docker : MonoBehaviour
     [SerializeField] private Material _activeMaterial;
     [Description("The material that will be applied to the docker when it is inactive, i.e. when it is not bought yet")]
     [SerializeField] private Material _inactiveMaterial;
-
 
     private Dockable _dockedObject = null;
     private bool _isActive = true;
@@ -32,6 +32,7 @@ public class Docker : MonoBehaviour
     public int Y { get; set; }
     public int Z { get; set; }
     public OnDock OnDock { get => _onDock; set => _onDock = value; }
+    public OnHighlightBuy OnHighlightBuy { get => _onHighlightBuy; set => _onHighlightBuy = value; }
 
     private LogManager _logger;
 
@@ -43,11 +44,9 @@ public class Docker : MonoBehaviour
     {
         _logger = LogManager.Instance;
 
-        if (_activeMaterial == null)
-            _logger.Error("Active material is not set for " + gameObject.name);
-
-        if (_inactiveMaterial == null)
-            _logger.Error("Inactive material is not set for " + gameObject.name);
+        if (!_activeMaterial) _logger.Error("Active material is not set for " + gameObject.name);
+        if (!_inactiveMaterial) _logger.Error("Inactive material is not set for " + gameObject.name);
+        if (!_highlightBuyMaterial) _logger.Error("Inactive material is not set for " + gameObject.name);
 
         SetActiveShader();
 
@@ -57,6 +56,8 @@ public class Docker : MonoBehaviour
         OnDock.AddListener(e => SetActiveShader());
 
         transform.localRotation = Quaternion.identity;
+
+        OnHighlightBuy.AddListener(OnHighlightBuyHandler);
     }
 
     /**
@@ -124,6 +125,26 @@ public class Docker : MonoBehaviour
 
         _logger.Trace("Ejecting " + dockable.name + " from " + name);
     }
+    
+    /**
+     * Called to (un)highlight the docker for purchase.
+     */
+    private void OnHighlightBuyHandler(HighlightBuyEvent highlightBuyEvent)
+    {
+        if (highlightBuyEvent.Highlight)
+            GetComponent<MeshRenderer>().material = _highlightBuyMaterial;
+        else
+            SetActiveShader();
+    }
+
+    /**
+     * Buy this docker. Note that verification should be made by the caller.
+     */
+    public void Buy()
+    {
+        IsActive = true;
+        SetActiveShader();
+    }
 }
 
 #region Events
@@ -153,4 +174,18 @@ public class OnDockEvent {
  * Event that is invoked when a dockable object is docked or undocked to this docker.
  */
 [Serializable] public class OnDock : UnityEvent<OnDockEvent> {}
+
+public class HighlightBuyEvent
+{
+    public bool Highlight { get; set; }
+    public HighlightBuyEvent(bool highlight)
+    {
+        Highlight = highlight;
+    }
+}
+
+/**
+ * Event that is invoked when the user use and item that lets him buy an inactive docker.
+ */
+[Serializable] public class OnHighlightBuy : UnityEvent<HighlightBuyEvent> { }
 #endregion

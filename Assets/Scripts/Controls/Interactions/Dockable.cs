@@ -30,7 +30,6 @@ public class Dockable : Pickable
 
     private Rigidbody _rb;
     private List<Docker> _dockedOn = new List<Docker>();
-    private LogManager _logger;
 
     public OnDocking OnDock { get => _onDock; }
     public List<Docker> DockedOn { get => _dockedOn; set => _dockedOn = value; }
@@ -47,16 +46,8 @@ public class Dockable : Pickable
 
         if (CorrectRotation == null) CorrectRotation = new Vector3(0, 0, 0);
 
-        if (_constraints.Count == 0)
-        {
-            OnDock.AddListener(SimpleDockToObject);
-            OnPick.AddListener(SimpleUndockObject);
-        }
-        else
-        {
-            OnDock.AddListener(ConstrainedDockToObject);
-            OnPick.AddListener(ConstrainedUndockObject);
-        }
+        OnDock.AddListener(_constraints.Count == 0 ? SimpleDockToObject : ConstrainedDockToObject);
+        OnPick.AddListener(_constraints.Count == 0 ? SimpleUndockObject : ConstrainedUndockObject);
 
         OnEject.AddListener(EjectHandler);
     }

@@ -117,7 +117,28 @@ public class FPSControlsWatcher : AbstractControlWatcher
                 if (interactable != null)
                 {
                     OnInteractEvent.Invoke(interactable);
+                    return;
                 }
+
+                GameObject hitObject = hit.collider.gameObject;
+
+                // Here we touched an item that is not an interactable.
+                var usableItem = GrabbedObject?.GetComponent<UsableItem>();
+                if (usableItem != null)
+                {
+                    usableItem.OnUse.Invoke(new UseEvent(hitObject));
+                    return;
+                }
+
+            }
+
+            // Here we check if the object is a usable item.
+            // In that case we are using it on nothing (null). So items with no target can be used.
+            var usableItem_ = GrabbedObject?.GetComponent<UsableItem>();
+            if (usableItem_ != null)
+            {             
+                usableItem_.OnUse.Invoke(new UseEvent());
+                return;
             }
         }
     }

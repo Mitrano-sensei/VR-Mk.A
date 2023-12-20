@@ -45,11 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dockPrefab: {fileID: 8915568232425242251, guid: b6ca7ea81ea5b664893cf247395c0d9b, type: 3}
-  firstActiveDocksIndex:
+  _firstActiveDocksIndex:
   - {x: 2, y: 1, z: 2}
   - {x: 2, y: 2, z: 2}
   - {x: 1, y: 2, z: 2}
   - {x: 1, y: 1, z: 2}
+  - {x: 1, y: 1, z: 0}
+  - {x: 1, y: 1, z: 1}
   _dockElements:
   - Position: {x: 0, y: 0, z: 0}
     DockOrigin: {fileID: 0}

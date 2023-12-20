@@ -49,7 +49,7 @@ public class DockManager : Singleton<DockManager>
         if (!_docks.ContainsKey(position)) return false;
 
         var dock = _docks[position];
-        return dock != null && dock.IsActive;
+        return dock != null && dock.IsActive && dock.IsAvailable;
     }
 
     /**
@@ -77,7 +77,10 @@ public class DockManager : Singleton<DockManager>
         {
             for (int j = -1; j <= 1; j++)
             {
-                if (i == 0 && j == 0) continue;
+                bool isOrigin = i == 0 && j == 0;
+                bool isDiagonal = i != 0 && j != 0;
+
+                if (isDiagonal || isOrigin) continue;
                 var neighbourPosition = new Vector3(docker.X + i, docker.Y + j, docker.Z);
 
                 if (IsDockable(neighbourPosition))
@@ -153,6 +156,18 @@ public class DockManager : Singleton<DockManager>
         GetRandomUsedDocker()?.Eject();
     }
 
+    /**
+     * Highlight every buyable dockers.
+     * If highlight is false, unhighlight every buyable dockers.
+     * Note that if you want to unhighlight a specific docker, you should call this BEFORE buying it.
+     */
+    public void HighlightBuyableDocks(bool highlight = true)
+    {
+        foreach (var docker in GetBuyableDocks())
+        {
+            docker.OnHighlightBuy.Invoke(new HighlightBuyEvent(highlight));
+        }
+    }
 }
 
 [Serializable]
