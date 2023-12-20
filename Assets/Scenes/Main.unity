@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414738, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -527,6 +527,33 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8958322583967140622, guid: 7eba268651bf72d4cbd1afd2840a494d, type: 3}
   m_PrefabInstance: {fileID: 493565294}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &493565302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493565295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ad81e2b6288854484c3231b4ace640, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onCollision:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1927922954}
+        m_TargetAssemblyTypeName: AudioSystem, Assembly-CSharp
+        m_MethodName: PlayCollisionSound
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &505020796 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6835511737293960357, guid: e1069698f269bb441a5fa0528cdeca7e, type: 3}
@@ -1203,6 +1230,33 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5157171038277036487, guid: 176f13a4ad0a256488df603a9fdd8640, type: 3}
   m_PrefabInstance: {fileID: 5157171038216699636}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1416179833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416179824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ad81e2b6288854484c3231b4ace640, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onCollision:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1927922954}
+        m_TargetAssemblyTypeName: AudioSystem, Assembly-CSharp
+        m_MethodName: PlayCollisionSound
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &1427897442 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1811282505571113525, guid: 11c2a9d218e8c684499ceae3203bccbe, type: 3}
@@ -1488,6 +1542,17 @@ MonoBehaviour:
       m_Calls: []
   _player: {fileID: 425143739}
   _cockpitEnvironment: {fileID: 261174588}
+--- !u!114 &1927922954 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1163341469097971916, guid: 1a32bb5aaf21df040a86121d1db770fb, type: 3}
+  m_PrefabInstance: {fileID: 1163341469288570650}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3148edc559c581f4c990ce36bbdfb99b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2003337051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1684,6 +1749,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1163341469097971916, guid: 1a32bb5aaf21df040a86121d1db770fb, type: 3}
+      propertyPath: _collisionClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 0ee169317f2618040b9bbcdef47a563e, type: 3}
     - target: {fileID: 1163341471010937456, guid: 1a32bb5aaf21df040a86121d1db770fb, type: 3}
       propertyPath: m_Name
       value: Systems
@@ -2036,7 +2105,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4690143699752417383, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0949707
+      value: -0.07946777
       objectReference: {fileID: 0}
     - target: {fileID: 6107694177497397987, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_RootOrder
