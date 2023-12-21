@@ -50,6 +50,19 @@ public class Dockable : Pickable
         OnPick.AddListener(_constraints.Count == 0 ? SimpleUndockObject : ConstrainedUndockObject);
 
         OnEject.AddListener(EjectHandler);
+
+        AddInteractionConstraint();
+    }
+
+    /**
+     * Adds a condition to the interaction so that the object can only be interacted with when docked.
+     */
+    private void AddInteractionConstraint()
+    {
+        var interactable = GetComponent<Interactable>();
+        if (interactable == null) return;
+
+        interactable.AddCondition(() => DockedOn.Count != 0);
     }
 
     /**

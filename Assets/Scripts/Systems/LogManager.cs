@@ -22,7 +22,7 @@ public class LogManager : Singleton<LogManager>
      */
     public void Trace(string message)
     {
-        if (_logMode == LogMode.TRACE) Log(message + " by LogManager");
+        if (_logMode == LogMode.TRACE) Log(message /*+ " by LogManager"*/);
     }
 
     /**

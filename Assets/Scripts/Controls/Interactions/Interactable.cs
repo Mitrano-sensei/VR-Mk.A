@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,6 +10,10 @@ using UnityEngine.Events;
 public class Interactable : MonoBehaviour
 {
     [SerializeField] private OnInteractionEvent _onInteraction = new OnInteractionEvent();
+    [SerializeField] private OnInteractionFailedEvent _onInteractionFailed = new OnInteractionFailedEvent();
+    
+    public delegate bool Condition();
+    private List<Condition> _conditions = new List<Condition>();
 
     protected LogManager _logger;
 
@@ -16,6 +22,7 @@ public class Interactable : MonoBehaviour
         _logger = LogManager.Instance;
 
         _onInteraction.AddListener((InteractEvent e) => { _logger.Trace("Interacted with " + name + (e.InteractedWith != null ? " while holding " + e.InteractedWith.name : "")); });
+        _onInteractionFailed.AddListener((InteractEvent e) => { _logger.Trace("Failed to interact with " + name + (e.InteractedWith != null ? " while holding " + e.InteractedWith.name : "") + "because all conditions are not met."); });
     }
 
     /**
@@ -23,15 +30,41 @@ public class Interactable : MonoBehaviour
      */
     public void Interact(InteractEvent interactEvent)
     {
-        var dockable = GetComponent<Dockable>();
-
-        if (dockable != null && dockable.DockedOn.Count == 0)
-        { 
-            _logger.Trace("Tried to interact with " + name + " while not docked");
+        if (CheckConditions())
+        {
+            _onInteractionFailed.Invoke(interactEvent);
             return;
         }
 
         _onInteraction.Invoke(interactEvent);        
+    }
+
+    /**
+     * Adds a condition to the interaction.
+     * If the condition is not met, the interaction will fail.
+     * 
+     * TODO : Add more information, like the name of the condition, or the object that failed the condition.
+     */
+    public void AddCondition(Condition condition)
+    {
+        _conditions.Add(condition);
+    }
+
+    /**
+     *  Check if all conditions are met before interacting.
+     *  If no conditions are set, the interaction is always possible.
+     *  To add a condition use AddCondition(() => { return myCondition; });
+     */
+    private bool CheckConditions()
+    {
+        var countCondition = _conditions.Count > 0;                     
+        var checkConditionsList = _conditions.TrueForAll(c => c());
+
+        // Can't get this to work yet, may need it later though
+        // if (!checkConditionsList) 
+        //     _logger.Trace("Condition from " + _conditions.Find(c => !c()).GetInvocationList()[0] + " is not met.");
+
+        return countCondition && !checkConditionsList;
     }
 }
 
@@ -50,4 +83,6 @@ public class InteractEvent
         InteractedWith = pickable;
     }
 }
+
+[Serializable] public class OnInteractionFailedEvent : UnityEvent<InteractEvent> { }
 #endregion
