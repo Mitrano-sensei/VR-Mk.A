@@ -57,14 +57,13 @@ public class Interactable : MonoBehaviour
      */
     private bool CheckConditions()
     {
-        var countCondition = _conditions.Count > 0;                     
         var checkConditionsList = _conditions.TrueForAll(c => c());
 
         // Can't get this to work yet, may need it later though
         // if (!checkConditionsList) 
         //     _logger.Trace("Condition from " + _conditions.Find(c => !c()).GetInvocationList()[0] + " is not met.");
 
-        return countCondition && !checkConditionsList;
+        return !checkConditionsList;
     }
 }
 
