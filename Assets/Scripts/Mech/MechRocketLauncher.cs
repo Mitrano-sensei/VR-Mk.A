@@ -8,7 +8,7 @@ public class MechRocketLauncher : MonoBehaviour
     [SerializeField] private Transform _rocketSpawnPoint;
     [SerializeField] private float _rocketSpeed = 10f;
     [SerializeField] private float _rocketLifeTime = 5f;
-    [SerializeField] private float _rocketDamage = 10f;
+    [SerializeField] private int _rocketDamage = 10;
     [SerializeField] private float _rocketExplosionRadius = 5f;
     [SerializeField] private float _rocketExplosionForce = 10f;
 
@@ -25,11 +25,11 @@ public class MechRocketLauncher : MonoBehaviour
 
         var rocket = Instantiate(_rocketPrefab, _rocketSpawnPoint.position, _rocketSpawnPoint.rotation);
         var rocketScript = rocket.GetComponent<RocketScript>();
-        rocketScript.SetSpeed(_rocketSpeed);
-        rocketScript.SetLifeTime(_rocketLifeTime);
-        rocketScript.SetDamage(_rocketDamage);
-        rocketScript.SetExplosionRadius(_rocketExplosionRadius);
-        rocketScript.SetExplosionForce(_rocketExplosionForce);
-    }
+        rocketScript.Speed = _rocketSpeed;
+        rocketScript.LifeTime = _rocketLifeTime;
+        rocketScript.Damage = _rocketDamage;
+        rocketScript.ExplosionRadius = _rocketExplosionRadius;
+        rocketScript.ExplosionForce= _rocketExplosionForce;
+    }   
 
 }
