@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RocketScript : MonoBehaviour
 {
@@ -19,6 +18,8 @@ public class RocketScript : MonoBehaviour
     public float ExplosionRadius { get => _explosionRadius; set => _explosionRadius = value; }
     public float ExplosionForce { get => _explosionForce; set => _explosionForce = value; }
 
+    public UnityEvent OnExplode { get; set; }
+
     private void Start()
     {
         _logger = LogManager.Instance;
@@ -34,6 +35,7 @@ public class RocketScript : MonoBehaviour
         var collide = collision.collider;
         if (collide.GetComponent<MechMovements>() != null || collide.GetComponent<RocketScript>() != null ) { return; } // Can't collide with the mech that fired it, TODO : Add a tag to the mech and check for that instead ?
 
+        OnExplode?.Invoke();
         _logger.Trace("Rocket collided with " + collision.gameObject.name);
 
         var colliders = Physics.OverlapSphere(transform.position, ExplosionRadius);
