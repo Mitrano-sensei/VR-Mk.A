@@ -2,7 +2,6 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,9 +11,9 @@ using UnityEngine.Events;
 public class Dockable : Pickable
 {
     [Header("Position")]
-    [Description("Rotation so that the object is correctly docked")]
+    [Tooltip("Rotation so that the object is correctly docked")]
     [SerializeField] private Vector3 _correctRotation;
-    [Description("The position of the main point that will be docked")]
+    [Tooltip("The position of the main point that will be docked")]
     [SerializeField] private Vector3 _centerPosition = new (0, 0, 0);
     
     [Header("Events")]
@@ -25,7 +24,7 @@ public class Dockable : Pickable
     [SerializeField] private List<Vector2> _constraints = new();
 
     [Header("Misc")]
-    [Description("The Time in Second the object becomes bouncy after an ejection.")]
+    [Tooltip("The Time in Second the object becomes bouncy after an ejection.")]
     [SerializeField] private float _bouncyTimeInSeconds = 1f;
 
     private Rigidbody _rb;

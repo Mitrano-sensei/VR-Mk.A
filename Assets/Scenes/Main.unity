@@ -196,7 +196,6 @@ GameObject:
   - component: {fileID: 142270430}
   - component: {fileID: 142270433}
   - component: {fileID: 142270432}
-  - component: {fileID: 142270431}
   m_Layer: 0
   m_Name: Face
   m_TagString: Untagged
@@ -219,19 +218,6 @@ Transform:
   m_Father: {fileID: 1509935205}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &142270431
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 142270429}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &142270432
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2085,6 +2071,7 @@ GameObject:
   - component: {fileID: 1095636975}
   - component: {fileID: 1095636979}
   - component: {fileID: 1095636980}
+  - component: {fileID: 1095636981}
   m_Layer: 0
   m_Name: Mecha
   m_TagString: Untagged
@@ -2216,6 +2203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rocketPrefab: {fileID: 3956545706807500900, guid: 23c301eb052df5646911d77df9d472cc, type: 3}
   _rocketSpawnPoint: {fileID: 76504751}
+  _isAlly: 1
   _rocketSpeed: 10
   _rocketLifeTime: 5
   _rocketDamage: 10
@@ -2227,6 +2215,33 @@ MonoBehaviour:
   _onExplode:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1095636981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095636973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8820c6169cc285347b2eb4f3bbbbc4c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onDamageTaken:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1131558715}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: GainHealth
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: -1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1131558713
 GameObject:
   m_ObjectHideFlags: 0
@@ -2611,6 +2626,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1460945916, guid: b3c294910d4916d4ea0e8ca5e88df5a4, type: 3}
   m_PrefabInstance: {fileID: 8237887980212088168}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1464413897
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1464413898}
+  m_Layer: 0
+  m_Name: RocketSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1464413898
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464413897}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.07, y: 0.5, z: 1.24}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1509935205}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1509935204
 GameObject:
   m_ObjectHideFlags: 0
@@ -2628,6 +2674,7 @@ GameObject:
   - component: {fileID: 1509935206}
   - component: {fileID: 1509935211}
   - component: {fileID: 1509935212}
+  - component: {fileID: 1509935214}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -2648,6 +2695,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 142270430}
+  - {fileID: 1464413898}
   m_Father: {fileID: 1083059075}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: -176.425, z: 0}
@@ -2790,6 +2838,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f5100f7759277f41a7344b299b50375, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1509935214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509935204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 086ca0506e6601943a8db3aba362cf9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rocketPrefab: {fileID: 3956545706807500900, guid: 23c301eb052df5646911d77df9d472cc, type: 3}
+  _rocketSpawnPoint: {fileID: 1464413898}
+  _isAlly: 0
+  _rocketSpeed: 1
+  _rocketLifeTime: 5
+  _rocketDamage: 10
+  _rocketExplosionRadius: 5
+  _rocketExplosionForce: 10
+  _onFire:
+    m_PersistentCalls:
+      m_Calls: []
+  _onExplode:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1541393717 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8958322583967140623, guid: 7eba268651bf72d4cbd1afd2840a494d, type: 3}
@@ -3483,7 +3557,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4690143699752417383, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.09362793
+      value: -0.02331543
       objectReference: {fileID: 0}
     - target: {fileID: 6107694177497397987, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_RootOrder

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,6 +10,9 @@ public class RocketScript : MonoBehaviour
     private int _damage;
     private float _explosionRadius;
     private float _explosionForce;
+    private bool _isAlly = true;
+
+    private GameObject _firedBy;
 
     private LogManager _logger;
 
@@ -19,6 +23,8 @@ public class RocketScript : MonoBehaviour
     public float ExplosionForce { get => _explosionForce; set => _explosionForce = value; }
 
     public UnityEvent OnExplode { get; set; }
+    public bool IsAlly { get => _isAlly; set => _isAlly = value; }
+    public GameObject FiredBy { get => _firedBy; set => _firedBy = value; }
 
     private void Start()
     {
@@ -28,12 +34,20 @@ public class RocketScript : MonoBehaviour
     private void Update()
     {
         transform.Translate(Vector3.forward * Speed * Time.deltaTime);
+        LifeTime -= Time.deltaTime;
+        if (LifeTime <= 0)
+        {
+            OnExplode?.Invoke();
+            Destroy(gameObject);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         var collide = collision.collider;
-        if (collide.GetComponent<MechMovements>() != null || collide.GetComponent<RocketScript>() != null ) { return; } // Can't collide with the mech that fired it, TODO : Add a tag to the mech and check for that instead ?
+        if ((_isAlly && collide.GetComponent<MechMovements>() != null) || collide.GetComponent<RocketScript>() != null ) { return; } // Can't collide with the mech that fired it, TODO : Add a tag to the mech and check for that instead ?
+        if (collide.gameObject == FiredBy) { return; } // Can't collide with the mech that fired it, TODO : Add a tag to the mech and check for that instead ?
+        Debug.Log("Firedby " + FiredBy + ", Collision " + collide.gameObject);
 
         OnExplode?.Invoke();
         _logger.Trace("Rocket collided with " + collision.gameObject.name);
@@ -41,7 +55,8 @@ public class RocketScript : MonoBehaviour
         var colliders = Physics.OverlapSphere(transform.position, ExplosionRadius);
         foreach (var collider in colliders)
         {
-            if (collider.gameObject.GetComponent<MechMovements>()) { continue; } // Can't collide with the mech that fired it, TODO : Add a tag to the mech and check for that instead ?
+            if (_isAlly && collider.gameObject.GetComponent<MechMovements>()) { continue; } // Can't collide with the mech that fired it, TODO : Add a tag to the mech and check for that instead ?
+            // Note that enemies can still be damaged by other enemies' rockets
 
             Debug.Log("Exploding on " + collider.gameObject.name);
             var rb = collider.gameObject.GetComponent<Rigidbody>();

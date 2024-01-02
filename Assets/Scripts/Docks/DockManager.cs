@@ -173,11 +173,11 @@ public class DockManager : Singleton<DockManager>
 [Serializable]
 public class DockElement
 {
-    [Description(   "Position of the dock on the motherboard. \n" +
+    [Tooltip(   "Position of the dock on the motherboard. \n" +
                     "Two docks are neigbours if their (X,Y) position are close (X = X'+-1 || Y = Y'+-1) AND their Z position are the same (Z == Z'). \n" +
                     "Two neighbour docks should be separated by .15m and should be aligned.")]
     public Vector3 Position;
-    [Description(   "Origin of the dock. \n" +
+    [Tooltip(   "Origin of the dock. \n" +
                     "The dock will be instantiated at this position.")]
     public Transform DockOrigin;
 }

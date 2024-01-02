@@ -7,6 +7,8 @@ public class FacePlayer : MonoBehaviour
     [SerializeField] private float _rotationSpeed = 1f;
     [SerializeField] private float _aggroDistance = 10f;
 
+    public bool IsActive { get; set; } = true;
+
     public void Start()
     {
         if (player == null)
@@ -17,7 +19,8 @@ public class FacePlayer : MonoBehaviour
 
     public void Update()
     {
-        RotateToPlayer();
+        if (IsActive)
+            RotateToPlayer();
     }
 
     /**

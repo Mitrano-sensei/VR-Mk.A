@@ -14,11 +14,11 @@ public class Docker : MonoBehaviour
     [SerializeField] private OnHighlightBuy _onHighlightBuy = new OnHighlightBuy();
 
     [Header("Materials")]
-    [Description("The material that will be applied to the docker when it is highlighted for purchase")]
+    [Tooltip("The material that will be applied to the docker when it is highlighted for purchase")]
     [SerializeField] private Material _highlightBuyMaterial = null;
-    [Description("The material that will be applied to the docker when it is active, i.e. when it is bought and available")]
+    [Tooltip("The material that will be applied to the docker when it is active, i.e. when it is bought and available")]
     [SerializeField] private Material _activeMaterial;
-    [Description("The material that will be applied to the docker when it is inactive, i.e. when it is not bought yet")]
+    [Tooltip("The material that will be applied to the docker when it is inactive, i.e. when it is not bought yet")]
     [SerializeField] private Material _inactiveMaterial;
 
     private Dockable _dockedObject = null;

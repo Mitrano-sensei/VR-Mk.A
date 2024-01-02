@@ -8,7 +8,7 @@ using UnityEngine;
 public class VelocityCalculator : MonoBehaviour
 {
     [Header("Parameters")]
-    [Description("Number of frames used to compute velocity")]
+    [Tooltip("Number of frames used to compute velocity")]
     [SerializeField] private int _bufferSize = 5;
 
     public Vector3 Velocity { get => ComputeVelocity(); }
