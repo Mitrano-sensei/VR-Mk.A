@@ -11,6 +11,8 @@ public class FPSControlsWatcher : AbstractControlWatcher
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _cockpitEnvironment;
 
+    private Hoverable _oldTarget;
+
     protected override void Awake()
     {
         base.Awake();
@@ -34,7 +36,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
             pickable.transform.SetParent(Camera.main.transform);
             mover = DOTween.Sequence();
             mover = mover.Append(pickable.transform.DOLocalMove(Vector3.forward + (dockable != null ? dockable.CenterPosition * 0.15f : Vector3.zero), .5f).SetEase(Ease.InOutQuad));
-            
+
             if (dockable != null)
             {
                 var rotationOffset = new Vector3(-90, 0, 0); // Because Correct rotation is for the item to dock, not to be picked. 
@@ -53,7 +55,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             var releasedObject = releasedEvent.ReleasedObject;
             var rb = releasedObject.GetComponent<Rigidbody>();
-            releasedObject.transform.SetParent(releasedObject.OriginParent != null ?  releasedObject.OriginParent : _cockpitEnvironment.transform);
+            releasedObject.transform.SetParent(releasedObject.OriginParent != null ? releasedObject.OriginParent : _cockpitEnvironment.transform);
         });
     }
 
@@ -99,7 +101,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
             // Raycast from main camera to next object.
             RaycastHit hit;
             HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit);
-            var docker = hit.collider?.gameObject?.GetComponent<Docker>(); 
+            var docker = hit.collider?.gameObject?.GetComponent<Docker>();
             OnReleaseEvent.Invoke(docker == null ? new ReleasedEvent(GrabbedObject) : new ReleasedEvent(GrabbedObject, docker));
         }
 
@@ -136,10 +138,38 @@ public class FPSControlsWatcher : AbstractControlWatcher
             // In that case we are using it on nothing (null). So items with no target can be used.
             var usableItem_ = GrabbedObject?.GetComponent<UsableItem>();
             if (usableItem_ != null)
-            {             
+            {
                 usableItem_.OnUse.Invoke(new UseEvent());
                 return;
             }
+        }
+
+        HoverCheck();
+    }
+
+    private void HoverCheck()
+    {
+        RaycastHit hit;
+        if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
+        {
+            var newTarget = hit.collider?.gameObject?.GetComponent<Hoverable>();
+            // From no target to a target
+            if (_oldTarget == null && newTarget != null) { newTarget.OnHoverEnter.Invoke(new OnHoverEnterEvent()); }
+            // From a target to another
+            else if (_oldTarget != null && _oldTarget != newTarget && newTarget != null)
+            {
+                _oldTarget.OnHoverExit.Invoke(new OnHoverExitEvent());
+                newTarget.OnHoverEnter.Invoke(new OnHoverEnterEvent());
+            }
+            // From target to same target (no change)
+            else if (_oldTarget != null && _oldTarget == newTarget) { newTarget.OnHover.Invoke(new OnHoverEvent()); }
+            // From a target to no target
+            else if (_oldTarget != null && newTarget == null) { _oldTarget.OnHoverExit.Invoke(new OnHoverExitEvent()); }
+        }
+        else
+        {
+            // From a target to none
+            _oldTarget.OnHoverExit.Invoke(new OnHoverExitEvent());
         }
     }
 
