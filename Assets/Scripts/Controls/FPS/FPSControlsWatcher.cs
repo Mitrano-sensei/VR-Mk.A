@@ -165,6 +165,8 @@ public class FPSControlsWatcher : AbstractControlWatcher
             else if (_oldTarget != null && _oldTarget == newTarget) { newTarget.OnHover.Invoke(new OnHoverEvent()); }
             // From a target to no target
             else if (_oldTarget != null && newTarget == null) { _oldTarget.OnHoverExit.Invoke(new OnHoverExitEvent()); }
+
+            _oldTarget = newTarget;
         }
         else
         {
