@@ -5,7 +5,7 @@
 #include "Common.cginc"
 
 // Camera depth texture
-sampler2D_float _CameraDepthTexture;
+UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 
 // Camera motion vectors texture
 sampler2D_half _CameraMotionVectorsTexture;

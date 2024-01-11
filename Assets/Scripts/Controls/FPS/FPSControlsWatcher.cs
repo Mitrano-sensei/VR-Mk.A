@@ -8,8 +8,8 @@ using UnityEngine.XR.Interaction.Toolkit;
  **/
 public class FPSControlsWatcher : AbstractControlWatcher
 {
+    [Header("Player")]
     [SerializeField] private GameObject _player;
-    [SerializeField] private GameObject _cockpitEnvironment;
 
     protected override void Awake()
     {
@@ -18,7 +18,6 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
     public void Start()
     {
-        // May be the same for VR ?
         OnTeleportEvent.AddListener((Vector3 newPos) =>
         {
             _player.transform.position = newPos;
@@ -41,7 +40,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
                 mover.Join(pickable.transform.DOLocalRotate(-dockable.CorrectRotation + rotationOffset, .5f).SetEase(Ease.InOutQuad));
             }
 
-            MoveUntilDie(pickable.transform, Camera.main.gameObject, mover);
+            Helpers.MoveUntilDie(pickable.transform, Camera.main.gameObject, mover);
         });
 
         OnReleaseEvent.AddListener((ReleasedEvent releasedEvent) =>
@@ -66,7 +65,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
+            if (Helpers.HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 // If the object is a teleporter, invoke the event.
                 if (hit.collider.gameObject.GetComponent<TeleportationArea>())
@@ -83,7 +82,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
+            if (Helpers.HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 // If the object is a pickable, invoke the event.
                 if (hit.collider.gameObject.GetComponent<Pickable>())
@@ -98,7 +97,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit);
+            Helpers.HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit);
             var docker = hit.collider?.gameObject?.GetComponent<Docker>(); 
             OnReleaseEvent.Invoke(docker == null ? new ReleasedEvent(GrabbedObject) : new ReleasedEvent(GrabbedObject, docker));
         }
@@ -110,7 +109,7 @@ public class FPSControlsWatcher : AbstractControlWatcher
 
             // Raycast from main camera to next object.
             RaycastHit hit;
-            if (HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
+            if (Helpers.HitBehindGrabbedObject(GrabbedObject?.gameObject, out hit))
             {
                 Interactable interactable = hit.collider.gameObject.GetComponent<Interactable>();
                 // If the object is an interactable, invoke the event.
@@ -142,35 +141,5 @@ public class FPSControlsWatcher : AbstractControlWatcher
             }
         }
     }
-
-    /**
-     * Cast a ray from the camera to the back of the grabbed object.
-     */
-    private bool HitBehindGrabbedObject(GameObject grabbedObject, out RaycastHit hit)
-    {
-
-        if (!grabbedObject) return Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit); ;
-
-        int oldLayer = grabbedObject.layer;
-        grabbedObject.layer = 2;
-        bool b = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, Mathf.Infinity, ~(1 << 2));
-        grabbedObject.layer = oldLayer;
-        
-        return b;
-    }
-
-    internal IEnumerator MoveUntilDie(Transform myTransform, GameObject target, Sequence tweener)
-    {
-        tweener.onKill += () => tweener = null;
-
-        while (tweener != null && tweener.IsPlaying())
-        {
-            tweener.Restart();
-            yield return new WaitForEndOfFrame();
-        }
-
-        yield return null;
-    }
-
     
 }

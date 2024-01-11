@@ -7,7 +7,7 @@ Shader "Hidden/Post FX/Builtin Debug Views"
 
         #pragma exclude_renderers d3d11_9x
 
-        sampler2D_float _CameraDepthTexture;
+        UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
         sampler2D_float _CameraDepthNormalsTexture;
         sampler2D_float _CameraMotionVectorsTexture;
 

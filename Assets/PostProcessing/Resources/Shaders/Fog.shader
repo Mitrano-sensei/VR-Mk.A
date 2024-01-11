@@ -27,7 +27,7 @@ Shader "Hidden/Post FX/Fog"
             return o;
         }
 
-        sampler2D _CameraDepthTexture;
+        UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 
         half4 _FogColor;
         float _Density;

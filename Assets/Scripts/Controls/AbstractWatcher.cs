@@ -12,6 +12,10 @@ public abstract class AbstractControlWatcher : Singleton<AbstractControlWatcher>
 {
     private Pickable grabbedObject = null;
 
+    [Header("Environment")]
+    [SerializeField] protected GameObject _cockpitEnvironment;
+
+    [Header("Events")]
     [SerializeField] private OnInteractEvent _onInteractEvent = new OnInteractEvent();
     [SerializeField] private OnTeleportEvent _onTeleportEvent = new OnTeleportEvent();
     [SerializeField] private OnGrabEvent _onGrabEvent = new OnGrabEvent();

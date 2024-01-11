@@ -1,7 +1,4 @@
 using DG.Tweening;
-using Palmmedia.ReportGenerator.Core.Logging;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MechCameraScript : MonoBehaviour

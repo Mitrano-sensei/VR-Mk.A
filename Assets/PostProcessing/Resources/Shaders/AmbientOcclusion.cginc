@@ -48,7 +48,7 @@ static const float kBeta = 0.002;
 
 // System built-in variables
 sampler2D _CameraGBufferTexture2;
-sampler2D_float _CameraDepthTexture;
+UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
 sampler2D _CameraDepthNormalsTexture;
 
 float4 _CameraDepthTexture_ST;

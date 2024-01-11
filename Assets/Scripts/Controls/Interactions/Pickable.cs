@@ -1,4 +1,3 @@
-using Palmmedia.ReportGenerator.Core.Logging;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
