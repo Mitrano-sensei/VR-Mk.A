@@ -152,7 +152,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &148076545 stripped
 Transform:
@@ -687,6 +687,10 @@ PrefabInstance:
       propertyPath: _onInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_FloatArgument
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 1399098454, guid: 11c2a9d218e8c684499ceae3203bccbe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 113398209721493338, guid: 11c2a9d218e8c684499ceae3203bccbe, type: 3}
       propertyPath: _constraints.Array.size
       value: 0
@@ -699,6 +703,10 @@ PrefabInstance:
       propertyPath: m_InteractionManager
       value: 
       objectReference: {fileID: 1751826949}
+    - target: {fileID: 1811282505552257174, guid: 11c2a9d218e8c684499ceae3203bccbe, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1811282505571113524, guid: 11c2a9d218e8c684499ceae3203bccbe, type: 3}
       propertyPath: m_Name
       value: cockpit
@@ -1445,7 +1453,7 @@ Transform:
   - {fileID: 261174589}
   - {fileID: 1672847688}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1751826948
 GameObject:
@@ -1769,7 +1777,7 @@ Transform:
   m_Children:
   - {fileID: 571986339}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4000010663772581 stripped
 Transform:
@@ -1793,7 +1801,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163341471010937462, guid: 1a32bb5aaf21df040a86121d1db770fb, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1163341471010937462, guid: 1a32bb5aaf21df040a86121d1db770fb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2139,7 +2147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4690143699752417383, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.023498535
+      value: -0.023376465
       objectReference: {fileID: 0}
     - target: {fileID: 6107694177497397987, guid: d6ef41888e9bb2b4cbabf2da566ab6a0, type: 3}
       propertyPath: m_RootOrder
